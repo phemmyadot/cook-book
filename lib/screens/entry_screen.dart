@@ -15,8 +15,6 @@ class _EntryScreenState extends State<EntryScreen>
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   TabController _tabController;
   bool _isFavorite = false;
-  FocusNode _focusNode = FocusNode();
-
   initState() {
     _tabController = new TabController(length: 2, vsync: this);
     super.initState();
@@ -59,8 +57,8 @@ class _EntryScreenState extends State<EntryScreen>
             physics: NeverScrollableScrollPhysics(),
             controller: _tabController,
             children: [
-              for (int i = 0; i < getItems().length; i++)
-                getItems().map((e) => e.page).toList()[i]
+              for (int i = 0; i < getItems(_isFavorite).length; i++)
+                getItems(_isFavorite).map((e) => e.page).toList()[i]
             ],
           ),
         ),
@@ -87,23 +85,24 @@ class _EntryScreenState extends State<EntryScreen>
             }
           },
           items: [
-            for (int i = 0; i < getItems().length; i++)
-              FABBottomAppBarItem(iconData: getItems()[i].icon, text: ''),
+            for (int i = 0; i < getItems(_isFavorite).length; i++)
+              FABBottomAppBarItem(
+                  iconData: getItems(_isFavorite)[i].icon, text: ''),
           ],
         ),
       );
     });
   }
 
-  List<TabNavigationItem> getItems() => [
+  List<TabNavigationItem> getItems(isFavorite) => [
         TabNavigationItem(
-          page: RecipePage(),
+          page: RecipePage(isFavorite: false),
           icon: Icons.home,
           title: "Home",
           padding: 8,
         ),
         TabNavigationItem(
-          page: RecipePage(isFavorite: _isFavorite),
+          page: RecipePage(isFavorite: true),
           icon: Icons.favorite_sharp,
           title: "Favourite",
           padding: 8,

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cookbook/screens/entry_screen.dart';
 import 'package:cookbook/screens/profile_creation.dart';
+import 'package:cookbook/utils/app_colors.dart';
 import 'package:cookbook/utils/settings.dart';
 import 'package:flutter/material.dart';
 
@@ -90,7 +91,7 @@ class _SplashScreenState extends State<SplashScreen>
                         child: Text('Cook Book',
                             style: TextStyle(
                                 fontSize: size,
-                                color: Colors.green[500],
+                                color: AppColors.primary,
                                 fontWeight: FontWeight.w500)),
                       );
                     },

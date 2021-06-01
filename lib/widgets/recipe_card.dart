@@ -1,3 +1,4 @@
+import 'package:cookbook/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class RecipeCard extends StatefulWidget {
@@ -25,7 +26,7 @@ class _RecipeCardState extends State<RecipeCard> {
           borderRadius: BorderRadius.all(
             Radius.circular(10),
           ),
-          color: Colors.white,
+          color: AppColors.white,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,11 +41,11 @@ class _RecipeCardState extends State<RecipeCard> {
                       padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Colors.green[500].withOpacity(0.7),
+                        color: AppColors.primary.withOpacity(0.7),
                       ),
                       child: Text('JD',
                           style: TextStyle(
-                              color: Colors.white,
+                              color: AppColors.white,
                               fontWeight: FontWeight.w500)),
                     ),
                     SizedBox(width: 5),
@@ -65,14 +66,14 @@ class _RecipeCardState extends State<RecipeCard> {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: Colors.white.withOpacity(0.3),
+                      color: AppColors.white.withOpacity(0.3),
                     ),
                     child: IconButton(
                         icon: Icon(
                           widget.isFavorite
                               ? Icons.favorite_sharp
                               : Icons.favorite_outline_sharp,
-                          color: Colors.green[500],
+                          color: AppColors.primary,
                         ),
                         onPressed: null),
                   ),

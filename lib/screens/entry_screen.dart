@@ -1,3 +1,4 @@
+import 'package:cookbook/utils/app_colors.dart';
 import 'package:cookbook/widgets/app_bar.dart';
 import 'package:cookbook/widgets/bottom_nav.dart';
 import 'package:cookbook/screens/recipe_page.dart';
@@ -39,9 +40,9 @@ class _EntryScreenState extends State<EntryScreen>
           onPressed: () {},
           child: Icon(
             Icons.add,
-            color: Colors.white,
+            color: AppColors.white,
           ),
-          backgroundColor: Colors.green[500],
+          backgroundColor: AppColors.primary,
           elevation: 2.0),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
@@ -50,7 +51,7 @@ class _EntryScreenState extends State<EntryScreen>
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Colors.white70, Colors.grey[200]],
+              colors: [AppColors.bg1, AppColors.bg2],
             ),
           ),
           child: new TabBarView(
@@ -73,9 +74,9 @@ class _EntryScreenState extends State<EntryScreen>
     return Builder(builder: (BuildContext context) {
       return Container(
         child: FABBottomAppBar(
-          backgroundColor: Colors.white,
-          color: Colors.grey[500],
-          selectedColor: Colors.green[400],
+          backgroundColor: AppColors.white,
+          color: AppColors.inactive,
+          selectedColor: AppColors.primary,
           notchedShape: CircularNotchedRectangle(),
           onTabSelected: (index) async {
             switch (index) {

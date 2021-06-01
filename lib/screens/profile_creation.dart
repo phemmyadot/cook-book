@@ -1,4 +1,5 @@
 import 'package:cookbook/screens/entry_screen.dart';
+import 'package:cookbook/utils/app_colors.dart';
 import 'package:cookbook/utils/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -56,22 +57,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 textCapitalization: TextCapitalization.sentences,
                 controller: _usernameController,
                 style: TextStyle(
-                    fontSize: 16.0, height: 1.0, color: Colors.blueGrey[900]),
+                    fontSize: 16.0, height: 1.0, color: AppColors.inactive),
                 decoration: new InputDecoration(
                   border: new OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.green[500]),
+                    borderSide: BorderSide(color: AppColors.primary),
                     borderRadius: const BorderRadius.all(
                       const Radius.circular(50.0),
                     ),
                   ),
                   enabledBorder: new OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.green[500]),
+                    borderSide: BorderSide(color: AppColors.primary),
                     borderRadius: const BorderRadius.all(
                       const Radius.circular(50.0),
                     ),
                   ),
                   focusedBorder: new OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.green[500]),
+                    borderSide: BorderSide(color: AppColors.primary),
                     borderRadius: const BorderRadius.all(
                       const Radius.circular(50.0),
                     ),
@@ -81,19 +82,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     icon: Icon(
                       Icons.arrow_forward_ios,
                       size: 20,
-                      color: Colors.green[500],
+                      color: AppColors.primary,
                     ),
                   ),
-                  focusColor: Colors.green[500],
-                  hoverColor: Colors.green[500],
+                  focusColor: AppColors.primary,
+                  hoverColor: AppColors.primary,
                   contentPadding: const EdgeInsets.symmetric(
                       vertical: 5.0, horizontal: 15.0),
                   isDense: true,
                   filled: true,
                   hintStyle:
-                      new TextStyle(color: Colors.blueGrey[900], height: 1.0),
+                      new TextStyle(color: AppColors.inactive, height: 1.0),
                   hintText: "Enter you username",
-                  fillColor: Colors.white70,
+                  fillColor: AppColors.bg2,
                 ),
                 validator: (value) => _validatorFn(value),
               ),

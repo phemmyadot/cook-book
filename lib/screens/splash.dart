@@ -12,21 +12,16 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  AnimationController _textAnimationController;
 
   var _isInit = true;
 
   @override
   void initState() {
-    _textAnimationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 3))
-          ..repeat();
     super.initState();
   }
 
   @override
   void dispose() {
-    _textAnimationController.dispose();
     super.dispose();
   }
 
@@ -46,7 +41,6 @@ class _SplashScreenState extends State<SplashScreen>
     return new Timer(duration, () => route());
   }
 
-//check on login
   route() async {
     Navigator.of(context).pushNamedAndRemoveUntil(
       EntryScreen.routeName,
@@ -63,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   initScreen(BuildContext context) {
-    double targetValue = MediaQuery.of(context).size.height * 0.3;
+    double targetValue = MediaQuery.of(context).size.height * 0.05;
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -80,14 +74,15 @@ class _SplashScreenState extends State<SplashScreen>
                 children: [
                   TweenAnimationBuilder(
                     tween: Tween<double>(begin: 0, end: targetValue),
-                    onEnd: () {
-                      setState(() => targetValue = targetValue);
-                    },
+                    onEnd: () => setState(() => targetValue = targetValue),
                     duration: Duration(seconds: 2),
                     builder: (BuildContext context, double size, Widget child) {
                       return Container(
-                        height: size,
-                        child: Text('cook book'),
+                        child: Text('Cook Book',
+                            style: TextStyle(
+                                fontSize: size,
+                                color: Colors.green[500],
+                                fontWeight: FontWeight.w500)),
                       );
                     },
                   ),

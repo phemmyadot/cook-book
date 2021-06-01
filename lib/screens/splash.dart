@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:cookbook/screens/entry_screen.dart';
+import 'package:cookbook/screens/profile_creation.dart';
+import 'package:cookbook/utils/settings.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -42,10 +44,17 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   route() async {
-    Navigator.of(context).pushNamedAndRemoveUntil(
-      EntryScreen.routeName,
-      (Route<dynamic> route) => false,
-    );
+    // Settings.isAppInit = true;
+    if (Settings.isAppInit)
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        ProfileScreen.routeName,
+        (Route<dynamic> route) => false,
+      );
+    else
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        EntryScreen.routeName,
+        (Route<dynamic> route) => false,
+      );
   }
 
   @override

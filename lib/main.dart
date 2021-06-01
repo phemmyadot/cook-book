@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'package:cookbook/app.dart';
+import 'package:cookbook/utils/settings.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // await Firebase.initializeApp();
 
   // setupLocator();
-  // await st.Settings.init();
+  await Settings.init();
 
   // if (userFirestoreEmulator) {
   //   FirebaseFirestore.instance.settings = Settings(

@@ -30,7 +30,55 @@ class _RecipeCardState extends State<RecipeCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image(image: AssetImage('assets/images/sample.jpg')),
+            SizedBox(height: 10),
+            Row(
+              children: [
+                Row(
+                  children: [
+                    SizedBox(width: 10),
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.green[500].withOpacity(0.7),
+                      ),
+                      child: Text('JD',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500)),
+                    ),
+                    SizedBox(width: 5),
+                    Text(truncateWithEllipsis(15, 'John Doe Username'),
+                        style: TextStyle(fontSize: 14.0)),
+                    SizedBox(width: 10),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 10),
+            Stack(
+              children: [
+                Image(image: AssetImage('assets/images/sample.jpg')),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white.withOpacity(0.3),
+                    ),
+                    child: IconButton(
+                        icon: Icon(
+                          widget.isFavorite
+                              ? Icons.favorite_sharp
+                              : Icons.favorite_outline_sharp,
+                          color: Colors.green[500],
+                        ),
+                        onPressed: null),
+                  ),
+                )
+              ],
+            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -38,28 +86,16 @@ class _RecipeCardState extends State<RecipeCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    Expanded(
+                      child: Text(
                         widget.isFavorite
                             ? 'test this'
                             : truncateWithEllipsis(
-                                30, 'Title of Recipe lon version hggggg'),
+                                25, 'Title of Recipe lon version hggggg'),
                         style: TextStyle(
-                            fontSize: 16.0, fontWeight: FontWeight.w500)),
-                    // SizedBox(height: 5),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Username', style: TextStyle(fontSize: 14.0)),
-                        IconButton(
-                            icon: Icon(
-                              widget.isFavorite
-                                  ? Icons.favorite_sharp
-                                  : Icons.favorite_outline_sharp,
-                              color: Colors.green[400],
-                            ),
-                            onPressed: null)
-                      ],
-                    )
+                            fontSize: 16.0, fontWeight: FontWeight.w500),
+                      ),
+                    ),
                   ],
                 ),
               ),

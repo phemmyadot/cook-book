@@ -26,7 +26,7 @@ class _RecipePageState extends State<RecipePage> {
             key: refreshKey,
             onRefresh: () => null,
             child: GridView.count(
-                childAspectRatio: screenWidth / (screenHeight - 130),
+                childAspectRatio: screenWidth / (screenHeight - 100),
                 shrinkWrap: true,
                 physics: ClampingScrollPhysics(),
                 primary: false,

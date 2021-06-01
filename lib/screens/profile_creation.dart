@@ -1,6 +1,7 @@
 import 'package:cookbook/screens/entry_screen.dart';
 import 'package:cookbook/utils/settings.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const routeName = '/profiles';
@@ -18,6 +19,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() => _autoValidate = true);
     if (!_formKey.currentState.validate()) return;
     _formKey.currentState.save();
+    final _userId = Uuid().v1();
+    Settings.userId = _userId;
     _usernameController.clear();
     Settings.isAppInit = false;
     Navigator.of(context).pushNamedAndRemoveUntil(

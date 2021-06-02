@@ -1,6 +1,9 @@
+import 'package:provider/provider.dart';
+import 'package:recipiebook/providers/app_provider.dart';
 import 'package:recipiebook/screens/entry_screen.dart';
 import 'package:recipiebook/utils/app_colors.dart';
 import 'package:recipiebook/utils/settings.dart';
+import 'package:recipiebook/models/http_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -21,13 +24,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (!_formKey.currentState.validate()) return;
     _formKey.currentState.save();
     final _userId = Uuid().v1();
-    Settings.userId = _userId;
-    _usernameController.clear();
-    Settings.isAppInit = false;
-    Navigator.of(context).pushNamedAndRemoveUntil(
-      EntryScreen.routeName,
-      (Route<dynamic> route) => false,
-    );
+    try {
+      await context
+          .read<AppProvider>()
+          .registerUserProfile(_usernameController.text, _userId);
+      Settings.userId = _userId;
+      _usernameController.clear();
+      Settings.isAppInit = false;
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        EntryScreen.routeName,
+        (Route<dynamic> route) => false,
+      );
+    } on HttpException catch (e, s) {
+      print(e.toString());
+      print(s.toString());
+      // BeStilDialog.hideLoading(context);
+
+      // BeStilDialog.showErrorDialog(context, e, user, s);
+    } catch (e, s) {
+      print(e.toString());
+      print(s.toString());
+      // BeStilDialog.hideLoading(context);
+
+      // BeStilDialog.showErrorDialog(context, e, user, s);
+    }
   }
 
   @override
@@ -54,6 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               autovalidate: _autoValidate,
               child: TextFormField(
                 key: _usernameKey,
+                onFieldSubmitted: (_) => _createProfile(),
                 textCapitalization: TextCapitalization.sentences,
                 controller: _usernameController,
                 style: TextStyle(

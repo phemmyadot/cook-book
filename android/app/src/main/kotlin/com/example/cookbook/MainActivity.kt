@@ -1,4 +1,4 @@
-package com.example.recipiebook
+package com.recipiebook.app
 
 import io.flutter.embedding.android.FlutterActivity
 

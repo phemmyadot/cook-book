@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.recipiebook">
+    package="com.recipiebook.app">
    <application
         android:label="recipiebook"
         android:icon="@mipmap/ic_launcher">

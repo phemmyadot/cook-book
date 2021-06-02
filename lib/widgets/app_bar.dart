@@ -1,4 +1,4 @@
-import 'package:cookbook/utils/app_colors.dart';
+import 'package:recipiebook/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {

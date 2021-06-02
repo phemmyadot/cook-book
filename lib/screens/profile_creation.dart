@@ -1,6 +1,6 @@
-import 'package:cookbook/screens/entry_screen.dart';
-import 'package:cookbook/utils/app_colors.dart';
-import 'package:cookbook/utils/settings.dart';
+import 'package:recipiebook/screens/entry_screen.dart';
+import 'package:recipiebook/utils/app_colors.dart';
+import 'package:recipiebook/utils/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -40,7 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Welcome to Cook Book,',
+              'Welcome to Recipie Book,',
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w600),
             ),
             SizedBox(height: 5.0),

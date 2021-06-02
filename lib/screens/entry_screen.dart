@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:cookbook/utils/app_colors.dart';
-import 'package:cookbook/widgets/app_bar.dart';
-import 'package:cookbook/widgets/bottom_nav.dart';
-import 'package:cookbook/screens/recipe_page.dart';
+import 'package:recipiebook/utils/app_colors.dart';
+import 'package:recipiebook/widgets/app_bar.dart';
+import 'package:recipiebook/widgets/bottom_nav.dart';
+import 'package:recipiebook/screens/recipe_page.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:textfield_tags/textfield_tags.dart';

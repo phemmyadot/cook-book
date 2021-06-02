@@ -1,4 +1,4 @@
-import 'package:cookbook/widgets/recipe_card.dart';
+import 'package:recipiebook/widgets/recipe_card.dart';
 import 'package:flutter/material.dart';
 
 class RecipePage extends StatefulWidget {

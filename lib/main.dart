@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:cookbook/app.dart';
-import 'package:cookbook/utils/settings.dart';
+import 'package:recipiebook/app.dart';
+import 'package:recipiebook/utils/settings.dart';
 import 'package:flutter/material.dart';
 
 void main() async {

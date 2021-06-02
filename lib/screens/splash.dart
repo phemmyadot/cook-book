@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'package:cookbook/screens/entry_screen.dart';
-import 'package:cookbook/screens/profile_creation.dart';
-import 'package:cookbook/utils/app_colors.dart';
-import 'package:cookbook/utils/settings.dart';
+import 'package:recipiebook/screens/entry_screen.dart';
+import 'package:recipiebook/screens/profile_creation.dart';
+import 'package:recipiebook/utils/app_colors.dart';
+import 'package:recipiebook/utils/settings.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -88,7 +88,7 @@ class _SplashScreenState extends State<SplashScreen>
                     duration: Duration(seconds: 2),
                     builder: (BuildContext context, double size, Widget child) {
                       return Container(
-                        child: Text('Cook Book',
+                        child: Text('Recipie Book',
                             style: TextStyle(
                                 fontSize: size,
                                 color: AppColors.primary,

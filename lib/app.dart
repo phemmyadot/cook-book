@@ -1,4 +1,4 @@
-import 'package:cookbook/screens/splash.dart';
+import 'package:recipiebook/screens/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './utils/routes.dart' as rt;
@@ -7,7 +7,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Cook Book',
+      title: 'Recipie Book',
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),

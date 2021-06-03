@@ -98,7 +98,7 @@ class AppServices {
     }
   }
 
-  Stream<List<RecipeKeyword>> getRecipes(String userId) {
+  Stream<List<RecipeKeyword>> getRecipes() {
     Stream<List<RecipeKeyword>> _combineStream;
     try {
       _combineStream = _recipeCollectionReference.snapshots().map((convert) {

@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:provider/provider.dart';
+import 'package:recipiebook/providers/app_provider.dart';
 import 'package:recipiebook/screens/entry_screen.dart';
 import 'package:recipiebook/screens/profile_creation.dart';
 import 'package:recipiebook/utils/app_colors.dart';
@@ -46,16 +48,18 @@ class _SplashScreenState extends State<SplashScreen>
 
   route() async {
     // Settings.isAppInit = true;
-    if (Settings.isAppInit)
+    if (Settings.isAppInit) {
       Navigator.of(context).pushNamedAndRemoveUntil(
         ProfileScreen.routeName,
         (Route<dynamic> route) => false,
       );
-    else
+    } else {
+      await Provider.of<AppProvider>(context, listen: false).getRecipes();
       Navigator.of(context).pushNamedAndRemoveUntil(
         EntryScreen.routeName,
         (Route<dynamic> route) => false,
       );
+    }
   }
 
   @override

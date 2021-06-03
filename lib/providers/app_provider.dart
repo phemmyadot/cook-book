@@ -36,8 +36,8 @@ class AppProvider with ChangeNotifier {
   Future<void> addRecipeToFavorite(String recipeId, String userId) =>
       _appServices.addRecipeToFavorite(recipeId, userId);
 
-  Future<void> getRecipes(String userId) async {
-    _appServices.getRecipes(userId).asBroadcastStream().listen(
+  Future<void> getRecipes() async {
+    _appServices.getRecipes().asBroadcastStream().listen(
       (recipes) {
         _recipes = recipes;
         notifyListeners();

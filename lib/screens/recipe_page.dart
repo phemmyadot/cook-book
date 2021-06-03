@@ -1,3 +1,5 @@
+import 'package:provider/provider.dart';
+import 'package:recipiebook/providers/app_provider.dart';
 import 'package:recipiebook/widgets/recipe_card.dart';
 import 'package:flutter/material.dart';
 
@@ -12,9 +14,10 @@ class _RecipePageState extends State<RecipePage> {
   final refreshKey = new GlobalKey<RefreshIndicatorState>();
   @override
   Widget build(BuildContext context) {
+    final recipes =
+        !widget.isFavorite ? Provider.of<AppProvider>(context).recipes : [];
     var smallestDimension = MediaQuery.of(context).size.shortestSide;
     final useMobileLayout = smallestDimension < 600;
-    final count = widget.isFavorite ? 2 : 6;
     double _crossAxisSpacing = 10, _mainAxisSpacing = 20;
     int _crossAxisCount = useMobileLayout ? 2 : 3;
     double screenWidth = MediaQuery.of(context).size.width;
@@ -26,7 +29,7 @@ class _RecipePageState extends State<RecipePage> {
             key: refreshKey,
             onRefresh: () => null,
             child: GridView.count(
-                childAspectRatio: screenWidth / (screenHeight - 100),
+                childAspectRatio: screenWidth / (screenHeight - 50),
                 shrinkWrap: true,
                 physics: ClampingScrollPhysics(),
                 primary: false,
@@ -36,9 +39,8 @@ class _RecipePageState extends State<RecipePage> {
                     EdgeInsets.only(bottom: 50, left: 20, right: 20, top: 20),
                 crossAxisCount: _crossAxisCount,
                 children: <Widget>[
-                  for (int i = 0; i < count; i++) RecipeCard(widget.isFavorite),
-                  RecipeCard(widget.isFavorite),
-                  RecipeCard(!widget.isFavorite)
+                  for (int i = 0; i < recipes.length; i++)
+                    RecipeCard(widget.isFavorite, recipes[i]),
                 ]),
           ),
         ),

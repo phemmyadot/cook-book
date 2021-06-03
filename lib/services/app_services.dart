@@ -11,6 +11,7 @@ import 'package:recipiebook/models/user.dart';
 import 'package:recipiebook/models/http_exception.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
+import 'package:path/path.dart' as p;
 
 class AppServices {
   final CollectionReference<Map<String, dynamic>> _userCollectionReference =
@@ -22,10 +23,15 @@ class AppServices {
   final CollectionReference<Map<String, dynamic>> _favoriteCollectionReference =
       FirebaseFirestore.instance.collection("favorite");
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  Future<void> authenticate() async {
+    await _firebaseAuth.signInAnonymously();
+  }
+
   Future<void> registerUserProfile(String userName, String userId) async {
     try {
       final token = ''; //TODO: token from firebase messaging
-      await _firebaseAuth.signInAnonymously();
+
       _userCollectionReference.doc(userId).set(
             UserModel(
               userName: userName,
@@ -51,7 +57,6 @@ class AppServices {
     bool hasNetworkImage,
   ) async {
     try {
-      await _firebaseAuth.signInAnonymously();
       final recipeId = Uuid().v1();
       _recipeCollectionReference.doc(recipeId).set(
             Recipe(
@@ -84,7 +89,6 @@ class AppServices {
 
   Future<void> addRecipeToFavorite(String recipeId, String userId) async {
     try {
-      await _firebaseAuth.signInAnonymously();
       final favoriteId = Uuid().v1();
       _favoriteCollectionReference.doc(favoriteId).set(
             Favorite(
@@ -102,7 +106,6 @@ class AppServices {
 
   Future<void> removeRecipeFromFavorite(String favoriteId) async {
     try {
-      await _firebaseAuth.signInAnonymously();
       _favoriteCollectionReference.doc(favoriteId).delete();
     } catch (e) {
       throw HttpException(e.message);
@@ -112,7 +115,6 @@ class AppServices {
   Stream<List<RecipeKeyword>> getRecipes() {
     Stream<List<RecipeKeyword>> _combineStream;
     try {
-      _firebaseAuth.signInAnonymously();
       _combineStream = _recipeCollectionReference.snapshots().map((convert) {
         return convert.docs.map((f) {
           Stream<Recipe> recipe =
@@ -143,7 +145,6 @@ class AppServices {
 
   Stream<List<Favorite>> getFavorites() {
     try {
-      _firebaseAuth.signInAnonymously();
       var devotionals = _favoriteCollectionReference.snapshots();
       return devotionals
           .map((e) => e.docs.map((e) => Favorite.fromData(e)).toList());
@@ -152,11 +153,10 @@ class AppServices {
     }
   }
 
-  Future<UploadTask> uploadFile(PickedFile file) async {
-    await _firebaseAuth.signInAnonymously();
+  Future<UploadTask> uploadFile(PickedFile file, String title) async {
     UploadTask uploadTask;
-
-    Reference ref = FirebaseStorage.instance.ref().child('/some-image.jpg');
+    final extension = p.extension(file.path);
+    Reference ref = FirebaseStorage.instance.ref().child('/$title$extension');
 
     final metadata = SettableMetadata(
         contentType: 'image/jpeg',

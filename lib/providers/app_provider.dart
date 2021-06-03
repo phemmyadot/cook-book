@@ -17,6 +17,7 @@ class AppProvider with ChangeNotifier {
   List<Favorite> _favorites = [];
   List<Favorite> get favorites => _favorites;
 
+  Future<void> authenticate() => _appServices.authenticate();
   Future<void> registerUserProfile(String userName, String userId) =>
       _appServices.registerUserProfile(userName, userId);
 
@@ -49,7 +50,10 @@ class AppProvider with ChangeNotifier {
   Future<void> getRecipes() async {
     _appServices.getRecipes().asBroadcastStream().listen(
       (recipes) {
-        _recipes = recipes;
+        _recipes = [...recipes];
+        _recipes
+            .sort((a, b) => b.recipe.modifiedOn.compareTo(a.recipe.modifiedOn));
+
         getFavorites();
         notifyListeners();
       },
@@ -69,6 +73,6 @@ class AppProvider with ChangeNotifier {
     );
   }
 
-  Future<UploadTask> uploadFile(PickedFile file) =>
-      _appServices.uploadFile(file);
+  Future<UploadTask> uploadFile(PickedFile file, String title) async =>
+      _appServices.uploadFile(file, title);
 }

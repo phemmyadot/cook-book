@@ -32,8 +32,9 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     if (_isInit) {
+      await Provider.of<AppProvider>(context, listen: false).authenticate();
       WidgetsBinding.instance.addPostFrameCallback((_) {
         startTime();
       });

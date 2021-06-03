@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -64,9 +65,12 @@ class _AddRecipeState extends State<AddRecipe> {
       final provider = Provider.of<AppProvider>(context, listen: false);
       var imagePath = 'assets/images/sample.jpg';
       if (_image != null) {
-        final image = await provider.uploadFile(_image);
-        imagePath =
-            '${image.snapshot.ref.bucket}/${image.snapshot.ref.fullPath}';
+        final image = await provider.uploadFile(
+            _image,
+            _titleController.text.isEmpty
+                ? _linkController.text
+                : _titleController.text);
+        imagePath = await image.snapshot.ref.getDownloadURL();
       }
       await provider.addRecipe(
         _titleController.text.isEmpty ? imagePath : _titleController.text,
@@ -175,8 +179,8 @@ class _AddRecipeState extends State<AddRecipe> {
                   ],
                 ),
                 SizedBox(height: 5),
-                _textField(_linkKey, _linkController,
-                    StringUtils.keyWordHintText, true),
+                _textField(
+                    _linkKey, _linkController, StringUtils.linkHintText, true),
                 SizedBox(height: 20),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -206,20 +210,24 @@ class _AddRecipeState extends State<AddRecipe> {
                 TextFieldTags(
                   key: _keywordKey,
                   tagsStyler: TagsStyler(
-                      tagTextStyle: TextStyle(fontWeight: FontWeight.bold),
-                      tagDecoration: BoxDecoration(
-                        color: Colors.blue[300],
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      tagCancelIcon: Icon(Icons.cancel,
-                          size: 18.0, color: Colors.blue[900]),
-                      tagPadding: const EdgeInsets.all(6.0)),
+                    tagDecoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.6),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    tagCancelIcon: Icon(Icons.cancel,
+                        size: 18.0, color: AppColors.white.withOpacity(0.5)),
+                    tagPadding:
+                        const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                    tagTextPadding: EdgeInsets.only(right: 5),
+                  ),
                   textFieldStyler: TextFieldStyler(
                     cursorColor: AppColors.primary,
                     textFieldFilledColor: AppColors.bg2,
                     textFieldFilled: true,
-                    textStyle:
-                        TextStyle(color: AppColors.inactive, height: 1.0),
+                    textStyle: TextStyle(
+                      color: AppColors.inactive,
+                      height: 1.0,
+                    ),
                     textFieldEnabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: AppColors.primary),
                       borderRadius: const BorderRadius.all(

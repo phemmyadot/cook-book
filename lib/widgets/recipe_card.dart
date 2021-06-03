@@ -4,7 +4,7 @@ import 'package:recipiebook/models/recipe.dart';
 import 'package:recipiebook/providers/app_provider.dart';
 import 'package:recipiebook/utils/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:recipiebook/utils/settings.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RecipeCard extends StatefulWidget {
   final bool isFavorite;
@@ -59,109 +59,132 @@ class _RecipeCardState extends State<RecipeCard> {
     }
   }
 
+  Future<void> _launchURL(String url) async {
+    // if (await canLaunch(url)) {
+    await launch(url);
+    // } else {
+    //   throw 'Could not launch $url';
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(
-            Radius.circular(10),
+    return GestureDetector(
+      onTap: () => _launchURL(widget.data.recipe.link),
+      child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
+            color: AppColors.white,
           ),
-          color: AppColors.white,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 10),
-            Row(
-              children: [
-                SizedBox(width: 10),
-                Container(
-                  height: 35,
-                  width: 35,
-                  padding: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: AppColors.primary.withOpacity(0.7),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 10),
+              Row(
+                children: [
+                  SizedBox(width: 10),
+                  Container(
+                    height: 35,
+                    width: 35,
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: AppColors.primary.withOpacity(0.7),
+                    ),
+                    child: Center(
+                      child: Text(getInitials(widget.data.recipe.creatorName),
+                          style: TextStyle(
+                              color: AppColors.white,
+                              fontWeight: FontWeight.w500)),
+                    ),
                   ),
-                  child: Center(
-                    child: Text(getInitials(widget.data.recipe.creatorName),
-                        style: TextStyle(
-                            color: AppColors.white,
-                            fontWeight: FontWeight.w500)),
+                  SizedBox(width: 5),
+                  Text(truncateWithEllipsis(15, widget.data.recipe.creatorName),
+                      style: TextStyle(
+                          fontSize: 14.0, fontWeight: FontWeight.w600)),
+                  SizedBox(width: 10),
+                ],
+              ),
+              SizedBox(height: 10),
+              Stack(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 130,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: widget.data.recipe.hasNetworkImage
+                              ? NetworkImage(widget.data.recipe.imageLink)
+                              : AssetImage(widget.data.recipe.imageLink)),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: AppColors.white.withOpacity(0.3),
+                      ),
+                      child: IconButton(
+                          icon: Icon(
+                            hasFavorite
+                                ? Icons.favorite_sharp
+                                : Icons.favorite_outline_sharp,
+                            color: AppColors.primary,
+                          ),
+                          onPressed: () => _favorite()),
+                    ),
+                  )
+                ],
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          truncateWithEllipsis(25, widget.data.recipe.title),
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(width: 5),
-                Text(truncateWithEllipsis(15, widget.data.recipe.creatorName),
-                    style:
-                        TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600)),
-                SizedBox(width: 10),
-              ],
-            ),
-            SizedBox(height: 10),
-            Stack(
-              children: [
-                Image(image: AssetImage('assets/images/sample.jpg')),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: AppColors.white.withOpacity(0.3),
-                    ),
-                    child: IconButton(
-                        icon: Icon(
-                          hasFavorite
-                              ? Icons.favorite_sharp
-                              : Icons.favorite_outline_sharp,
-                          color: AppColors.primary,
-                        ),
-                        onPressed: () => _favorite()),
-                  ),
-                )
-              ],
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
                   children: [
-                    Expanded(
-                      child: Text(
-                        truncateWithEllipsis(25, widget.data.recipe.title),
-                        style: TextStyle(
-                            fontSize: 16.0, fontWeight: FontWeight.w500),
+                    SizedBox(width: 10),
+                    for (int i = 0; i < widget.data.keywords.length; i++)
+                      Container(
+                        margin: EdgeInsets.only(right: 5),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: AppColors.primary.withOpacity(0.8),
+                        ),
+                        child: Text(
+                          widget.data.keywords[i].keyword,
+                          style:
+                              TextStyle(color: AppColors.white, fontSize: 12),
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  SizedBox(width: 10),
-                  for (int i = 0; i < widget.data.keywords.length; i++)
-                    Container(
-                      margin: EdgeInsets.only(right: 5),
-                      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: AppColors.primary.withOpacity(0.8),
-                      ),
-                      child: Text(
-                        widget.data.keywords[i].keyword,
-                        style: TextStyle(color: AppColors.white, fontSize: 12),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            SizedBox(height: 10)
-          ],
-        ));
+              SizedBox(height: 10)
+            ],
+          )),
+    );
   }
 }

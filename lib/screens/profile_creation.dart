@@ -5,6 +5,7 @@ import 'package:recipiebook/utils/app_colors.dart';
 import 'package:recipiebook/utils/settings.dart';
 import 'package:recipiebook/models/http_exception.dart';
 import 'package:flutter/material.dart';
+import 'package:recipiebook/utils/string_utils.dart';
 import 'package:uuid/uuid.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -39,15 +40,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } on HttpException catch (e, s) {
       print(e.toString());
       print(s.toString());
-      // BeStilDialog.hideLoading(context);
-
-      // BeStilDialog.showErrorDialog(context, e, user, s);
+      // TODO Error dialog
     } catch (e, s) {
       print(e.toString());
       print(s.toString());
-      // BeStilDialog.hideLoading(context);
-
-      // BeStilDialog.showErrorDialog(context, e, user, s);
+      // TODO Error dialog
     }
   }
 
@@ -61,12 +58,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Welcome to Recipie Book,',
+              StringUtils.welcomeNote1,
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w600),
             ),
             SizedBox(height: 5.0),
             Text(
-              'set you username to proceed.',
+              StringUtils.welcomeNote2,
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w600),
             ),
             SizedBox(height: 30.0),
@@ -115,7 +112,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   filled: true,
                   hintStyle:
                       new TextStyle(color: AppColors.inactive, height: 1.0),
-                  hintText: "Enter you username",
+                  hintText: StringUtils.usernameHintText,
                   fillColor: AppColors.bg2,
                 ),
                 validator: (value) => _validatorFn(value),
@@ -130,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   String _validatorFn(String value) {
     if (value.isEmpty) {
-      return 'Field is required';
+      return StringUtils.requiredField;
     }
     return null;
   }

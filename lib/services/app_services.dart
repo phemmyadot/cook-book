@@ -19,6 +19,8 @@ class AppServices {
       FirebaseFirestore.instance.collection("recipe");
   final CollectionReference<Map<String, dynamic>> _keywordCollectionReference =
       FirebaseFirestore.instance.collection("keyword");
+  final CollectionReference<Map<String, dynamic>> _favoriteCollectionReference =
+      FirebaseFirestore.instance.collection("favorite");
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   Future<void> registerUserProfile(String userName, String userId) async {
     try {
@@ -117,6 +119,36 @@ class AppServices {
               keywords,
               (Recipe recipe, List<Keyword> keywords) =>
                   RecipeKeyword(keywords: keywords, recipe: recipe));
+        });
+      }).switchMap((observables) {
+        return observables.length > 0
+            ? Rx.combineLatestList(observables)
+            : Stream.value([]);
+      });
+      return _combineStream;
+    } catch (e) {
+      throw HttpException(e.message);
+    }
+  }
+
+  Stream<List<FavoriteRecipe>> getFavorites() {
+    Stream<List<FavoriteRecipe>> _combineStream;
+    try {
+      _combineStream = _favoriteCollectionReference.snapshots().map((convert) {
+        return convert.docs.map((f) {
+          Stream<Favorite> favorite =
+              Stream.value(f).map<Favorite>((doc) => Favorite.fromData(doc));
+
+          Stream<Recipe> recipe = _recipeCollectionReference
+              .doc(f['recipeId'])
+              .snapshots()
+              .map<Recipe>((doc) => Recipe.fromData(doc));
+
+          return Rx.combineLatest2(
+              recipe,
+              favorite,
+              (Recipe recipe, Favorite favorite) =>
+                  FavoriteRecipe(recipe: recipe, favorite: favorite));
         });
       }).switchMap((observables) {
         return observables.length > 0

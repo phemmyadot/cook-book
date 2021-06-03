@@ -33,9 +33,6 @@ class _RecipeCardState extends State<RecipeCard> {
 
   @override
   Widget build(BuildContext context) {
-    final int keywordLength = widget.data.keywords.length > 3
-        ? widget.data.keywords.getRange(0, 3).length
-        : widget.data.keywords.length;
     return Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(
@@ -119,7 +116,7 @@ class _RecipeCardState extends State<RecipeCard> {
               child: Row(
                 children: [
                   SizedBox(width: 10),
-                  for (int i = 0; i < keywordLength; i++)
+                  for (int i = 0; i < widget.data.keywords.length; i++)
                     Container(
                       margin: EdgeInsets.only(right: 5),
                       padding: EdgeInsets.symmetric(vertical: 2, horizontal: 8),
@@ -129,19 +126,6 @@ class _RecipeCardState extends State<RecipeCard> {
                       ),
                       child: Text(
                         widget.data.keywords[i].keyword,
-                        style: TextStyle(color: AppColors.white, fontSize: 12),
-                      ),
-                    ),
-                  if (widget.data.keywords.length < 3)
-                    Container(
-                      margin: EdgeInsets.only(right: 5),
-                      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: AppColors.primary.withOpacity(0.8),
-                      ),
-                      child: Text(
-                        'more',
                         style: TextStyle(color: AppColors.white, fontSize: 12),
                       ),
                     ),

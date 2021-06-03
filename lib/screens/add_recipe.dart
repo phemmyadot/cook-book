@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:recipiebook/providers/app_provider.dart';
 import 'package:recipiebook/utils/app_colors.dart';
 import 'package:recipiebook/utils/settings.dart';
+import 'package:recipiebook/utils/string_utils.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
 class AddRecipe extends StatefulWidget {
@@ -80,15 +81,11 @@ class _AddRecipeState extends State<AddRecipe> {
     } on HttpException catch (e, s) {
       print(e.toString());
       print(s.toString());
-      // BeStilDialog.hideLoading(context);
-
-      // BeStilDialog.showErrorDialog(context, e, user, s);
+      // TODO Error dialog
     } catch (e, s) {
       print(e.toString());
       print(s.toString());
-      // BeStilDialog.hideLoading(context);
-
-      // Be
+      // TODO Error dialog
     }
   }
 
@@ -136,7 +133,7 @@ class _AddRecipeState extends State<AddRecipe> {
               children: [
                 SizedBox(height: 20),
                 Text(
-                  'Add new recipe',
+                  StringUtils.addRecipeTitle,
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
                       color: AppColors.darkPrimary,
@@ -144,19 +141,20 @@ class _AddRecipeState extends State<AddRecipe> {
                 ),
                 SizedBox(height: 40),
                 Text(
-                  'Title',
+                  StringUtils.titleText,
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
                       color: AppColors.darkPrimary),
                 ),
                 SizedBox(height: 5),
-                _textField(_titleKey, _titleController, 'Title', false),
+                _textField(_titleKey, _titleController,
+                    StringUtils.titleHintText, false),
                 SizedBox(height: 20),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      'Link',
+                      StringUtils.linkText,
                       style: TextStyle(
                           fontWeight: FontWeight.w500,
                           color: AppColors.darkPrimary),
@@ -170,20 +168,21 @@ class _AddRecipeState extends State<AddRecipe> {
                     !_hasLinkError
                         ? SizedBox()
                         : Text(
-                            'This field is required',
+                            StringUtils.requiredField,
                             style:
                                 TextStyle(fontSize: 12, color: AppColors.error),
                           ),
                   ],
                 ),
                 SizedBox(height: 5),
-                _textField(_linkKey, _linkController, 'Link', true),
+                _textField(_linkKey, _linkController,
+                    StringUtils.keyWordHintText, true),
                 SizedBox(height: 20),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      'Keywords',
+                      StringUtils.keyWordText,
                       style: TextStyle(
                           fontWeight: FontWeight.w500,
                           color: AppColors.darkPrimary),
@@ -234,7 +233,7 @@ class _AddRecipeState extends State<AddRecipe> {
                       ),
                     ),
                     isDense: true,
-                    hintText: 'Keywords',
+                    hintText: StringUtils.keyWordHintText,
                     helperText: '',
                     hintStyle:
                         TextStyle(color: AppColors.inactive, height: 1.0),
@@ -249,7 +248,7 @@ class _AddRecipeState extends State<AddRecipe> {
                   },
                 ),
                 Text(
-                  'NB. Image will be chosen based on keyword if one is not uploaded',
+                  StringUtils.uploadNote,
                   style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,

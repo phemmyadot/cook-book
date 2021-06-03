@@ -10,6 +10,8 @@ class AppProvider with ChangeNotifier {
 
   List<RecipeKeyword> _recipes = [];
   List<RecipeKeyword> get recipes => _recipes;
+  List<FavoriteRecipe> _favorites = [];
+  List<FavoriteRecipe> get favorites => _favorites;
 
   Future<void> registerUserProfile(String userName, String userId) =>
       _appServices.registerUserProfile(userName, userId);
@@ -40,6 +42,15 @@ class AppProvider with ChangeNotifier {
     _appServices.getRecipes().asBroadcastStream().listen(
       (recipes) {
         _recipes = recipes;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> getFavorites() async {
+    _appServices.getFavorites().asBroadcastStream().listen(
+      (favorites) {
+        _favorites = favorites;
         notifyListeners();
       },
     );

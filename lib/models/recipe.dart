@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:recipiebook/models/favorite.dart';
 import 'package:recipiebook/models/keyword.dart';
 
 class Recipe {
@@ -63,5 +64,17 @@ class RecipeKeyword {
     this.id,
     this.recipe,
     this.keywords,
+  });
+}
+
+class FavoriteRecipe {
+  final String id;
+  final Recipe recipe;
+  final Favorite favorite;
+
+  FavoriteRecipe({
+    this.id,
+    this.recipe,
+    this.favorite,
   });
 }

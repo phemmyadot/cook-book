@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:provider/provider.dart';
+import 'package:recipiebook/models/http_exception.dart';
 import 'package:recipiebook/providers/app_provider.dart';
 import 'package:recipiebook/screens/entry_screen.dart';
 import 'package:recipiebook/screens/profile_creation.dart';
@@ -47,14 +48,24 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   route() async {
-    // Settings.isAppInit = true;
     if (Settings.isAppInit) {
       Navigator.of(context).pushNamedAndRemoveUntil(
         ProfileScreen.routeName,
         (Route<dynamic> route) => false,
       );
     } else {
-      await Provider.of<AppProvider>(context, listen: false).getRecipes();
+      try {
+        await Provider.of<AppProvider>(context, listen: false).getRecipes();
+        await Provider.of<AppProvider>(context, listen: false).getFavorites();
+      } on HttpException catch (e, s) {
+        print(e.toString());
+        print(s.toString());
+        // TODO Error dialog
+      } catch (e, s) {
+        print(e.toString());
+        print(s.toString());
+        // TODO Error dialog
+      }
       Navigator.of(context).pushNamedAndRemoveUntil(
         EntryScreen.routeName,
         (Route<dynamic> route) => false,

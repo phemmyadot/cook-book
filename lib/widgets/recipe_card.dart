@@ -1,6 +1,10 @@
+import 'package:provider/provider.dart';
+import 'package:recipiebook/models/http_exception.dart';
 import 'package:recipiebook/models/recipe.dart';
+import 'package:recipiebook/providers/app_provider.dart';
 import 'package:recipiebook/utils/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:recipiebook/utils/settings.dart';
 
 class RecipeCard extends StatefulWidget {
   final bool isFavorite;
@@ -29,6 +33,30 @@ class _RecipeCardState extends State<RecipeCard> {
       initials += '${names[i][0]}';
     }
     return initials;
+  }
+
+  bool get hasFavorite {
+    final favorites =
+        Provider.of<AppProvider>(context, listen: false).favoriteRecipes;
+    return favorites.any((f) => f.recipe.id == widget.data.recipe.id);
+  }
+
+  _favorite() {
+    try {
+      hasFavorite
+          ? Provider.of<AppProvider>(context, listen: false)
+              .removeRecipeFromFavorite(widget.data.recipe.id)
+          : Provider.of<AppProvider>(context, listen: false)
+              .addRecipeToFavorite(widget.data.recipe.id);
+    } on HttpException catch (e, s) {
+      print(e.toString());
+      print(s.toString());
+      // TODO Error dialog
+    } catch (e, s) {
+      print(e.toString());
+      print(s.toString());
+      // TODO Error dialog
+    }
   }
 
   @override
@@ -83,12 +111,12 @@ class _RecipeCardState extends State<RecipeCard> {
                     ),
                     child: IconButton(
                         icon: Icon(
-                          widget.isFavorite
+                          hasFavorite
                               ? Icons.favorite_sharp
                               : Icons.favorite_outline_sharp,
                           color: AppColors.primary,
                         ),
-                        onPressed: null),
+                        onPressed: () => _favorite()),
                   ),
                 )
               ],

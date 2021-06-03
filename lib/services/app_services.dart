@@ -85,8 +85,8 @@ class AppServices {
   Future<void> addRecipeToFavorite(String recipeId, String userId) async {
     try {
       await _firebaseAuth.signInAnonymously();
-      final recipeId = Uuid().v1();
-      _recipeCollectionReference.doc(recipeId).set(
+      final favoriteId = Uuid().v1();
+      _favoriteCollectionReference.doc(favoriteId).set(
             Favorite(
               recipeId: recipeId,
               createdBy: userId,
@@ -100,9 +100,19 @@ class AppServices {
     }
   }
 
+  Future<void> removeRecipeFromFavorite(String favoriteId) async {
+    try {
+      await _firebaseAuth.signInAnonymously();
+      _favoriteCollectionReference.doc(favoriteId).delete();
+    } catch (e) {
+      throw HttpException(e.message);
+    }
+  }
+
   Stream<List<RecipeKeyword>> getRecipes() {
     Stream<List<RecipeKeyword>> _combineStream;
     try {
+      _firebaseAuth.signInAnonymously();
       _combineStream = _recipeCollectionReference.snapshots().map((convert) {
         return convert.docs.map((f) {
           Stream<Recipe> recipe =
@@ -131,37 +141,19 @@ class AppServices {
     }
   }
 
-  Stream<List<FavoriteRecipe>> getFavorites() {
-    Stream<List<FavoriteRecipe>> _combineStream;
+  Stream<List<Favorite>> getFavorites() {
     try {
-      _combineStream = _favoriteCollectionReference.snapshots().map((convert) {
-        return convert.docs.map((f) {
-          Stream<Favorite> favorite =
-              Stream.value(f).map<Favorite>((doc) => Favorite.fromData(doc));
-
-          Stream<Recipe> recipe = _recipeCollectionReference
-              .doc(f['recipeId'])
-              .snapshots()
-              .map<Recipe>((doc) => Recipe.fromData(doc));
-
-          return Rx.combineLatest2(
-              recipe,
-              favorite,
-              (Recipe recipe, Favorite favorite) =>
-                  FavoriteRecipe(recipe: recipe, favorite: favorite));
-        });
-      }).switchMap((observables) {
-        return observables.length > 0
-            ? Rx.combineLatestList(observables)
-            : Stream.value([]);
-      });
-      return _combineStream;
+      _firebaseAuth.signInAnonymously();
+      var devotionals = _favoriteCollectionReference.snapshots();
+      return devotionals
+          .map((e) => e.docs.map((e) => Favorite.fromData(e)).toList());
     } catch (e) {
       throw HttpException(e.message);
     }
   }
 
   Future<UploadTask> uploadFile(PickedFile file) async {
+    await _firebaseAuth.signInAnonymously();
     UploadTask uploadTask;
 
     Reference ref = FirebaseStorage.instance.ref().child('/some-image.jpg');

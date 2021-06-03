@@ -54,18 +54,6 @@ class _SplashScreenState extends State<SplashScreen>
         (Route<dynamic> route) => false,
       );
     } else {
-      try {
-        await Provider.of<AppProvider>(context, listen: false).getRecipes();
-        await Provider.of<AppProvider>(context, listen: false).getFavorites();
-      } on HttpException catch (e, s) {
-        print(e.toString());
-        print(s.toString());
-        // TODO Error dialog
-      } catch (e, s) {
-        print(e.toString());
-        print(s.toString());
-        // TODO Error dialog
-      }
       Navigator.of(context).pushNamedAndRemoveUntil(
         EntryScreen.routeName,
         (Route<dynamic> route) => false,

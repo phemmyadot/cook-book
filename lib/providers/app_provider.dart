@@ -1,17 +1,21 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:recipiebook/models/favorite.dart';
 import 'package:recipiebook/models/recipe.dart';
 import 'package:recipiebook/utils/locator.dart';
 import 'package:recipiebook/services/app_services.dart';
+import 'package:recipiebook/utils/settings.dart';
 
 class AppProvider with ChangeNotifier {
   AppServices _appServices = locator<AppServices>();
 
   List<RecipeKeyword> _recipes = [];
   List<RecipeKeyword> get recipes => _recipes;
-  List<FavoriteRecipe> _favorites = [];
-  List<FavoriteRecipe> get favorites => _favorites;
+  List<RecipeKeyword> _favoriteRecipes = [];
+  List<RecipeKeyword> get favoriteRecipes => _favoriteRecipes;
+  List<Favorite> _favorites = [];
+  List<Favorite> get favorites => _favorites;
 
   Future<void> registerUserProfile(String userName, String userId) =>
       _appServices.registerUserProfile(userName, userId);
@@ -35,13 +39,18 @@ class AppProvider with ChangeNotifier {
         hasNetworkImage,
       );
 
-  Future<void> addRecipeToFavorite(String recipeId, String userId) =>
-      _appServices.addRecipeToFavorite(recipeId, userId);
+  Future<void> addRecipeToFavorite(String recipeId) =>
+      _appServices.addRecipeToFavorite(recipeId, Settings.userId);
+  Future<void> removeRecipeFromFavorite(String recipeId) {
+    final favoriteId = _favorites.firstWhere((f) => f.recipeId == recipeId).id;
+    return _appServices.removeRecipeFromFavorite(favoriteId);
+  }
 
   Future<void> getRecipes() async {
     _appServices.getRecipes().asBroadcastStream().listen(
       (recipes) {
         _recipes = recipes;
+        getFavorites();
         notifyListeners();
       },
     );
@@ -51,6 +60,10 @@ class AppProvider with ChangeNotifier {
     _appServices.getFavorites().asBroadcastStream().listen(
       (favorites) {
         _favorites = favorites;
+        final favoriteRecipes = _recipes
+            .where((r) => favorites.any((f) => f.recipeId == r.recipe.id))
+            .toList();
+        _favoriteRecipes = favoriteRecipes;
         notifyListeners();
       },
     );

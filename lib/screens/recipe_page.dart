@@ -1,4 +1,5 @@
 import 'package:provider/provider.dart';
+import 'package:recipiebook/models/http_exception.dart';
 import 'package:recipiebook/providers/app_provider.dart';
 import 'package:recipiebook/utils/app_colors.dart';
 import 'package:recipiebook/utils/string_utils.dart';
@@ -14,11 +15,32 @@ class RecipePage extends StatefulWidget {
 
 class _RecipePageState extends State<RecipePage> {
   final refreshKey = new GlobalKey<RefreshIndicatorState>();
+  var _isInit = true;
+
+  void didChangeDependencies() async {
+    if (_isInit) {
+      try {
+        await Provider.of<AppProvider>(context, listen: false).getRecipes();
+      } on HttpException catch (e, s) {
+        print(e.toString());
+        print(s.toString());
+        // TODO Error dialog
+      } catch (e, s) {
+        print(e.toString());
+        print(s.toString());
+        // TODO Error dialog
+      }
+      setState(() => _isInit = false);
+    }
+
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     final recipes = !widget.isFavorite
         ? Provider.of<AppProvider>(context).recipes
-        : Provider.of<AppProvider>(context).favorites;
+        : Provider.of<AppProvider>(context).favoriteRecipes;
     var smallestDimension = MediaQuery.of(context).size.shortestSide;
     final useMobileLayout = smallestDimension < 600;
     double _crossAxisSpacing = 10, _mainAxisSpacing = 20;

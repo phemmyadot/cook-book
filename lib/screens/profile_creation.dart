@@ -29,6 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           .read<AppProvider>()
           .registerUserProfile(_usernameController.text, _userId);
       Settings.userId = _userId;
+      Settings.username = _usernameController.text;
       _usernameController.clear();
       Settings.isAppInit = false;
       Navigator.of(context).pushNamedAndRemoveUntil(

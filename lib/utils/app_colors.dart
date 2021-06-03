@@ -7,4 +7,5 @@ class AppColors {
   static Color bg2 = Colors.white70;
   static Color bg1 = Colors.grey[200];
   static Color inactive = Colors.grey[500];
+  static Color error = Colors.red[900];
 }

@@ -127,7 +127,7 @@ class _RecipeCardState extends State<RecipeCard> {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: AppColors.white.withOpacity(0.3),
+                        color: AppColors.white.withOpacity(0.7),
                       ),
                       child: IconButton(
                           icon: Icon(

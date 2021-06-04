@@ -13,4 +13,11 @@ class StringUtils {
   static String requiredField = 'This field is required';
   static String uploadNote =
       'NB. Image will be chosen based on keyword if one is not uploaded';
+  static List<String> defaultPaths = [
+    'sample.jpg',
+    'verg.jpg',
+    'pizza.jpg',
+    'samosa.jpg'
+  ];
+  static String defaultImage = 'assets/images/sample.jpg';
 }

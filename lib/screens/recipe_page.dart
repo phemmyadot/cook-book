@@ -19,21 +19,25 @@ class _RecipePageState extends State<RecipePage> {
 
   void didChangeDependencies() async {
     if (_isInit) {
-      try {
-        await Provider.of<AppProvider>(context, listen: false).getRecipes();
-      } on HttpException catch (e, s) {
-        print(e.toString());
-        print(s.toString());
-        // TODO Error dialog
-      } catch (e, s) {
-        print(e.toString());
-        print(s.toString());
-        // TODO Error dialog
-      }
+      await _getRecipes();
       setState(() => _isInit = false);
     }
 
     super.didChangeDependencies();
+  }
+
+  Future<void> _getRecipes() async {
+    try {
+      await Provider.of<AppProvider>(context, listen: false).getRecipes();
+    } on HttpException catch (e, s) {
+      print(e.toString());
+      print(s.toString());
+      // TODO Error dialog
+    } catch (e, s) {
+      print(e.toString());
+      print(s.toString());
+      // TODO Error dialog
+    }
   }
 
   @override
@@ -52,7 +56,7 @@ class _RecipePageState extends State<RecipePage> {
         Expanded(
           child: RefreshIndicator(
             key: refreshKey,
-            onRefresh: () => null,
+            onRefresh: () => _getRecipes(),
             child: recipes.length < 1
                 ? Center(
                     child: Text(
@@ -65,20 +69,23 @@ class _RecipePageState extends State<RecipePage> {
                       textAlign: TextAlign.center,
                     ),
                   )
-                : GridView.count(
-                    childAspectRatio: screenWidth / (screenHeight - 30),
-                    shrinkWrap: true,
-                    physics: ClampingScrollPhysics(),
-                    primary: false,
-                    crossAxisSpacing: _crossAxisSpacing,
-                    mainAxisSpacing: _mainAxisSpacing,
-                    padding: EdgeInsets.only(
-                        bottom: 50, left: 20, right: 20, top: 20),
-                    crossAxisCount: _crossAxisCount,
-                    children: <Widget>[
-                        for (int i = 0; i < recipes.length; i++)
-                          RecipeCard(widget.isFavorite, recipes[i]),
-                      ]),
+                : Container(
+                    color: Colors.red,
+                    child: GridView.count(
+                        childAspectRatio: screenWidth / (screenHeight - 30),
+                        shrinkWrap: true,
+                        physics: ClampingScrollPhysics(),
+                        primary: false,
+                        crossAxisSpacing: _crossAxisSpacing,
+                        mainAxisSpacing: _mainAxisSpacing,
+                        padding: EdgeInsets.only(
+                            bottom: 50, left: 20, right: 20, top: 20),
+                        crossAxisCount: _crossAxisCount,
+                        children: <Widget>[
+                          for (int i = 0; i < recipes.length; i++)
+                            RecipeCard(widget.isFavorite, recipes[i]),
+                        ]),
+                  ),
           ),
         ),
       ],

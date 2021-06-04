@@ -58,12 +58,23 @@ class _AddRecipeState extends State<AddRecipe> {
     setState(() => null);
   }
 
+  List<String> _defaultPaths = StringUtils.defaultPaths;
+  String getDefaultImage() {
+    if (_defaultPaths.any((r) => _keywords.any((f) => r.contains(f)))) {
+      final path =
+          _defaultPaths.firstWhere((r) => _keywords.any((f) => r.contains(f)));
+      return 'assets/images/$path';
+    } else {
+      return StringUtils.defaultImage;
+    }
+  }
+
   void _addRecipe() async {
     validateForm();
     if (_hasKeywordsError || _hasLinkError) return;
     try {
       final provider = Provider.of<AppProvider>(context, listen: false);
-      var imagePath = 'assets/images/sample.jpg';
+      var imagePath = getDefaultImage();
       if (_image != null) {
         final image = await provider.uploadFile(
             _image,
@@ -73,7 +84,9 @@ class _AddRecipeState extends State<AddRecipe> {
         imagePath = await image.snapshot.ref.getDownloadURL();
       }
       await provider.addRecipe(
-        _titleController.text.isEmpty ? imagePath : _titleController.text,
+        _titleController.text.isEmpty
+            ? _linkController.text
+            : _titleController.text,
         imagePath,
         _linkController.text,
         Settings.username,

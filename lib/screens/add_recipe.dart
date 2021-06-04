@@ -46,15 +46,21 @@ class _AddRecipeState extends State<AddRecipe> {
     _setState(() => _image = image);
   }
 
-  validateForm() {
-    if (_keywords.length < 1)
-      _hasKeywordsError = true;
-    else
-      _hasKeywordsError = false;
+  validateLink() {
     if (_linkController.text.isEmpty)
       _hasLinkError = true;
     else
       _hasLinkError = false;
+
+    setState(() => null);
+  }
+
+  validateKeywords() {
+    if (_keywords.length < 1)
+      _hasKeywordsError = true;
+    else
+      _hasKeywordsError = false;
+
     setState(() => null);
   }
 
@@ -70,7 +76,8 @@ class _AddRecipeState extends State<AddRecipe> {
   }
 
   void _addRecipe() async {
-    validateForm();
+    validateLink();
+    validateKeywords();
     if (_hasKeywordsError || _hasLinkError) return;
     try {
       final provider = Provider.of<AppProvider>(context, listen: false);
@@ -261,11 +268,11 @@ class _AddRecipeState extends State<AddRecipe> {
                   ),
                   onTag: (tag) {
                     _keywords.add(tag);
-                    validateForm();
+                    validateKeywords();
                   },
                   onDelete: (tag) {
                     _keywords.remove(tag);
-                    validateForm();
+                    validateKeywords();
                   },
                 ),
                 Text(
@@ -386,7 +393,7 @@ class _AddRecipeState extends State<AddRecipe> {
         hintText: hintText,
         fillColor: AppColors.bg2,
       ),
-      onChanged: (_) => validate ? validateForm() : null,
+      onChanged: (_) => validate ? validateLink() : null,
     );
   }
 }

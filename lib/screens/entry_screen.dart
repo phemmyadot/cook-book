@@ -16,6 +16,7 @@ class _EntryScreenState extends State<EntryScreen>
   int _currentIndex = 0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   TabController _tabController;
+  TextEditingController _searchController = TextEditingController();
   bool _isFavorite = false;
   initState() {
     _tabController = new TabController(length: 2, vsync: this);
@@ -28,6 +29,7 @@ class _EntryScreenState extends State<EntryScreen>
     setState(() {
       _isFavorite = index == 1;
       _currentIndex = index;
+      _searchController.text = '';
     });
   }
 
@@ -49,7 +51,10 @@ class _EntryScreenState extends State<EntryScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(isFavorite: _isFavorite),
+      appBar: CustomAppBar(
+        isFavorite: _isFavorite,
+        searchController: _searchController,
+      ),
       key: _scaffoldKey,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(

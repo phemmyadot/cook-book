@@ -1,9 +1,13 @@
+import 'package:provider/provider.dart';
+import 'package:recipiebook/models/http_exception.dart';
+import 'package:recipiebook/providers/app_provider.dart';
 import 'package:recipiebook/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final bool isFavorite;
-  CustomAppBar({Key key, this.isFavorite = false})
+  final TextEditingController searchController;
+  CustomAppBar({Key key, this.isFavorite = false, this.searchController})
       : preferredSize = Size.fromHeight(kToolbarHeight),
         super(key: key);
 
@@ -15,11 +19,24 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _CustomAppBarState extends State<CustomAppBar> {
-  TextEditingController _searchController = TextEditingController();
   final _searchKey = GlobalKey();
 
-  void _searchRecipe() async {
-    FocusScope.of(context).unfocus();
+  void _searchRecipe(searchText) async {
+    try {
+      widget.isFavorite
+          ? await Provider.of<AppProvider>(context, listen: false)
+              .searchFavorites(searchText)
+          : await Provider.of<AppProvider>(context, listen: false)
+              .searchRecipes(searchText);
+    } on HttpException catch (e, s) {
+      print(e.toString());
+      print(s.toString());
+      // TODO Error dialog
+    } catch (e, s) {
+      print(e.toString());
+      print(s.toString());
+      // TODO Error dialog
+    }
   }
 
   @override
@@ -45,7 +62,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
           child: TextField(
             key: _searchKey,
             textCapitalization: TextCapitalization.sentences,
-            controller: _searchController,
+            controller: widget.searchController,
+            onChanged: (val) => _searchRecipe(val),
             style: TextStyle(
                 fontSize: 16.0, height: 1.0, color: AppColors.inactive),
             decoration: new InputDecoration(
@@ -68,7 +86,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 ),
               ),
               prefixIcon: IconButton(
-                onPressed: () => _searchRecipe(),
+                onPressed: () => _searchRecipe(widget.searchController.text),
                 icon: Icon(
                   Icons.search,
                   size: 20,

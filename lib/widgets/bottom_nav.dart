@@ -77,19 +77,11 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
         child: Material(
           type: MaterialType.transparency,
           child: GestureDetector(
-            onTap: () => onPressed(index),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(item.iconData, color: color, size: widget.iconSize),
-                Text(
-                  item.text,
-                  style: TextStyle(color: color),
-                )
-              ],
-            ),
-          ),
+              onTap: () => onPressed(index),
+              child: Container(
+                color: Colors.transparent,
+                child: Icon(item.iconData, color: color, size: widget.iconSize),
+              )),
         ),
       ),
     );

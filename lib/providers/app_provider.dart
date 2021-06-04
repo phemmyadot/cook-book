@@ -10,9 +10,11 @@ import 'package:recipiebook/utils/settings.dart';
 class AppProvider with ChangeNotifier {
   AppServices _appServices = locator<AppServices>();
 
+  List<RecipeKeyword> _backupRecipes = [];
   List<RecipeKeyword> _recipes = [];
   List<RecipeKeyword> get recipes => _recipes;
   List<RecipeKeyword> _favoriteRecipes = [];
+  List<RecipeKeyword> _backupFavoriteRecipes = [];
   List<RecipeKeyword> get favoriteRecipes => _favoriteRecipes;
   List<Favorite> _favorites = [];
   List<Favorite> get favorites => _favorites;
@@ -50,6 +52,7 @@ class AppProvider with ChangeNotifier {
   Future<void> getRecipes() async {
     _appServices.getRecipes().asBroadcastStream().listen(
       (recipes) {
+        _backupRecipes = recipes;
         _recipes = [...recipes];
         _recipes
             .sort((a, b) => b.recipe.modifiedOn.compareTo(a.recipe.modifiedOn));
@@ -68,6 +71,10 @@ class AppProvider with ChangeNotifier {
             .where((r) => favorites.any((f) => f.recipeId == r.recipe.id))
             .toList();
         _favoriteRecipes = favoriteRecipes;
+        _backupFavoriteRecipes = favoriteRecipes;
+        _favoriteRecipes
+            .sort((a, b) => b.recipe.modifiedOn.compareTo(a.recipe.modifiedOn));
+
         notifyListeners();
       },
     );
@@ -75,4 +82,61 @@ class AppProvider with ChangeNotifier {
 
   Future<UploadTask> uploadFile(PickedFile file, String title) async =>
       _appServices.uploadFile(file, title);
+
+  Future<void> searchRecipes(String searchQuery) async {
+    if (searchQuery == '') {
+      await getRecipes();
+    } else {
+      // await getRecipes();s
+      List<RecipeKeyword> recipes = _backupRecipes
+          .where((RecipeKeyword data) => data.recipe.title
+              .toLowerCase()
+              .contains(searchQuery.toLowerCase()))
+          .toList();
+      for (int i = 0; i < _recipes.length; i++) {
+        var hasMatch = _recipes[i].keywords.any(
+            (u) => u.keyword.toLowerCase().contains(searchQuery.toLowerCase()));
+        if (hasMatch) recipes.add(_recipes[i]);
+      }
+      List<RecipeKeyword> _distinct = [];
+      var idSet = <String>{};
+      for (var r in recipes) {
+        if (idSet.add(r.recipe.id)) {
+          _distinct.add(r);
+        }
+      }
+      _recipes = _distinct;
+      _recipes
+          .sort((a, b) => b.recipe.modifiedOn.compareTo(a.recipe.modifiedOn));
+    }
+    notifyListeners();
+  }
+
+  Future<void> searchFavorites(String searchQuery) async {
+    if (searchQuery == '') {
+      getFavorites();
+    } else {
+      List<RecipeKeyword> favoriteRecipes = _backupFavoriteRecipes
+          .where((RecipeKeyword data) => data.recipe.title
+              .toLowerCase()
+              .contains(searchQuery.toLowerCase()))
+          .toList();
+      for (int i = 0; i < _favoriteRecipes.length; i++) {
+        var hasMatch = _favoriteRecipes[i].keywords.any(
+            (u) => u.keyword.toLowerCase().contains(searchQuery.toLowerCase()));
+        if (hasMatch) favoriteRecipes.add(_favoriteRecipes[i]);
+      }
+      List<RecipeKeyword> _distinct = [];
+      var idSet = <String>{};
+      for (var r in favoriteRecipes) {
+        if (idSet.add(r.recipe.id)) {
+          _distinct.add(r);
+        }
+      }
+      _favoriteRecipes = favoriteRecipes;
+      _favoriteRecipes
+          .sort((a, b) => b.recipe.modifiedOn.compareTo(a.recipe.modifiedOn));
+    }
+    notifyListeners();
+  }
 }

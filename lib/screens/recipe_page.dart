@@ -70,7 +70,6 @@ class _RecipePageState extends State<RecipePage> {
                     ),
                   )
                 : Container(
-                    color: Colors.red,
                     child: GridView.count(
                         childAspectRatio: screenWidth / (screenHeight - 30),
                         shrinkWrap: true,

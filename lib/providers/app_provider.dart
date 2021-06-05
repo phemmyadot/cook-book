@@ -1,6 +1,4 @@
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:recipiebook/models/favorite.dart';
 import 'package:recipiebook/models/recipe.dart';
 import 'package:recipiebook/utils/locator.dart';
@@ -25,21 +23,17 @@ class AppProvider with ChangeNotifier {
 
   Future<void> addRecipe(
     String title,
-    String imageLink,
     String link,
     String creator,
     String userId,
     List<String> keywords,
-    bool hasNetworkImage,
   ) =>
       _appServices.addRecipe(
         title,
-        imageLink,
         link,
         creator,
         userId,
         keywords,
-        hasNetworkImage,
       );
 
   Future<void> addRecipeToFavorite(String recipeId) =>
@@ -79,9 +73,6 @@ class AppProvider with ChangeNotifier {
       },
     );
   }
-
-  Future<UploadTask> uploadFile(PickedFile file, String title) async =>
-      _appServices.uploadFile(file, title);
 
   Future<void> searchRecipes(String searchQuery) async {
     if (searchQuery == '') {

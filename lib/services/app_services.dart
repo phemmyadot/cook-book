@@ -1,17 +1,20 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:metadata_extract/metadata_extract.dart';
 import 'package:recipiebook/models/favorite.dart';
+import 'package:recipiebook/models/html_to_json.dart';
 import 'package:recipiebook/models/keyword.dart';
 import 'package:recipiebook/models/recipe.dart';
 import 'package:recipiebook/models/user.dart';
 import 'package:recipiebook/models/http_exception.dart';
+import 'package:recipiebook/utils/string_utils.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
-import 'package:path/path.dart' as p;
+import 'package:http/http.dart' as http;
+import 'package:html/parser.dart' show parse;
+import 'package:html/dom.dart' as dom;
+// import 'package:metadata_fetch/metadata_fetch.dart';
 
 class AppServices {
   final CollectionReference<Map<String, dynamic>> _userCollectionReference =
@@ -23,6 +26,8 @@ class AppServices {
   final CollectionReference<Map<String, dynamic>> _favoriteCollectionReference =
       FirebaseFirestore.instance.collection("favorite");
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  List<String> _defaultPaths = StringUtils.defaultPaths;
 
   Future<void> authenticate() async {
     await _firebaseAuth.signInAnonymously();
@@ -49,19 +54,19 @@ class AppServices {
 
   Future<void> addRecipe(
     String title,
-    String imageLink,
     String link,
     String creator,
     String userId,
     List<String> keywords,
-    bool hasNetworkImage,
   ) async {
     try {
       final recipeId = Uuid().v1();
+      final image = await getImage(link);
+      final hasNetworkImage = image != null || !image.contains('youtube');
       _recipeCollectionReference.doc(recipeId).set(
             Recipe(
               title: title,
-              imageLink: imageLink,
+              imageLink: hasNetworkImage ? image : getDefaultImage(keywords),
               link: link,
               creatorName: creator,
               hasNetworkImage: hasNetworkImage,
@@ -83,7 +88,17 @@ class AppServices {
             ).toJson());
       }
     } catch (e) {
-      throw HttpException(e.message);
+      throw HttpException(e?.message);
+    }
+  }
+
+  String getDefaultImage(List<String> keywords) {
+    if (_defaultPaths.any((r) => keywords.any((f) => r.contains(f)))) {
+      final path =
+          _defaultPaths.firstWhere((r) => keywords.any((f) => r.contains(f)));
+      return 'assets/images/$path';
+    } else {
+      return StringUtils.defaultImage;
     }
   }
 
@@ -153,17 +168,25 @@ class AppServices {
     }
   }
 
-  Future<UploadTask> uploadFile(PickedFile file, String title) async {
-    UploadTask uploadTask;
-    final extension = p.extension(file.path);
-    Reference ref = FirebaseStorage.instance.ref().child('/$title$extension');
+  Future<String> getImage(String url) async {
+    var client = http.Client();
+    var urlSplit = url.split('//');
+    final path = urlSplit.length > 1 ? urlSplit[1] : urlSplit[0];
+    int idx = path.indexOf("/");
+    List paths = idx < 0
+        ? [urlSplit[1], '/']
+        : [path.substring(0, idx).trim(), '/${path.substring(idx + 1).trim()}'];
 
-    final metadata = SettableMetadata(
-        contentType: 'image/jpeg',
-        customMetadata: {'picked-file-path': file.path});
+    http.Response response = await client.get(Uri.https(paths[0], paths[1]));
 
-    uploadTask = ref.putFile(File(file.path), metadata);
-
-    return Future.value(uploadTask);
+    var document = responseToDocument(response);
+    if (document == null && urlSplit[1].contains('youtube'))
+      return 'assets/images/youtube.png';
+    if (document == null) return null;
+    var data = MetadataParser.parse(document);
+    if (data == null)
+      return null;
+    else
+      return Future.value(data.image);
   }
 }

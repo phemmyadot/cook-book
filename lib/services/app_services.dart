@@ -127,6 +127,14 @@ class AppServices {
     }
   }
 
+  Future<void> deleteRecipe(String recipeId) async {
+    try {
+      _recipeCollectionReference.doc(recipeId).delete();
+    } catch (e) {
+      throw HttpException(e.message);
+    }
+  }
+
   Stream<List<RecipeKeyword>> getRecipes() {
     Stream<List<RecipeKeyword>> _combineStream;
     try {

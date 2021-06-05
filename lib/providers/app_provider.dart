@@ -38,10 +38,14 @@ class AppProvider with ChangeNotifier {
 
   Future<void> addRecipeToFavorite(String recipeId) =>
       _appServices.addRecipeToFavorite(recipeId, Settings.userId);
+
   Future<void> removeRecipeFromFavorite(String recipeId) {
     final favoriteId = _favorites.firstWhere((f) => f.recipeId == recipeId).id;
     return _appServices.removeRecipeFromFavorite(favoriteId);
   }
+
+  Future<void> deleteRecipe(String recipeId) =>
+      _appServices.deleteRecipe(recipeId);
 
   Future<void> getRecipes() async {
     _appServices.getRecipes().asBroadcastStream().listen(

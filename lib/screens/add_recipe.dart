@@ -9,6 +9,8 @@ import 'package:recipiebook/utils/string_utils.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
 class AddRecipe extends StatefulWidget {
+  final String link;
+  AddRecipe({this.link = ''});
   @override
   _AddRecipeState createState() => _AddRecipeState();
 }
@@ -24,6 +26,7 @@ class _AddRecipeState extends State<AddRecipe> {
   bool _hasKeywordsError = false;
 
   initState() {
+    if (widget.link.isNotEmpty) _linkController.text = widget.link;
     super.initState();
   }
 

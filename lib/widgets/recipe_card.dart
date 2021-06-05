@@ -4,6 +4,8 @@ import 'package:recipiebook/models/recipe.dart';
 import 'package:recipiebook/providers/app_provider.dart';
 import 'package:recipiebook/utils/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:recipiebook/utils/date_formatter.dart';
+import 'package:recipiebook/utils/settings.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RecipeCard extends StatefulWidget {
@@ -101,9 +103,21 @@ class _RecipeCardState extends State<RecipeCard> {
                     ),
                   ),
                   SizedBox(width: 5),
-                  Text(truncateWithEllipsis(15, widget.data.recipe.creatorName),
-                      style: TextStyle(
-                          fontSize: 14.0, fontWeight: FontWeight.w600)),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        DateFormatter(widget.data.recipe.modifiedOn).format(),
+                        style: TextStyle(
+                            fontSize: 11.0, fontWeight: FontWeight.w400),
+                      ),
+                      Text(
+                          truncateWithEllipsis(
+                              15, widget.data.recipe.creatorName),
+                          style: TextStyle(
+                              fontSize: 14.0, fontWeight: FontWeight.w600)),
+                    ],
+                  ),
                   SizedBox(width: 10),
                 ],
               ),
@@ -159,28 +173,45 @@ class _RecipeCardState extends State<RecipeCard> {
                   ),
                 ),
               ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    SizedBox(width: 10),
-                    for (int i = 0; i < widget.data.keywords.length; i++)
-                      Container(
-                        margin: EdgeInsets.only(right: 5),
-                        padding:
-                            EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: AppColors.primary.withOpacity(0.8),
-                        ),
-                        child: Text(
-                          widget.data.keywords[i].keyword,
-                          style:
-                              TextStyle(color: AppColors.white, fontSize: 12),
-                        ),
+              Row(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          SizedBox(width: 10),
+                          for (int i = 0; i < widget.data.keywords.length; i++)
+                            Container(
+                              margin: EdgeInsets.only(right: 5),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 2, horizontal: 8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: AppColors.primary.withOpacity(0.8),
+                              ),
+                              child: Text(
+                                widget.data.keywords[i].keyword,
+                                style: TextStyle(
+                                    color: AppColors.white, fontSize: 12),
+                              ),
+                            ),
+                        ],
                       ),
-                  ],
-                ),
+                    ),
+                  ),
+                  if (Settings.userId == widget.data.recipe.createdBy)
+                    IconButton(
+                      icon: Icon(
+                        Icons.delete_forever_outlined,
+                        color: AppColors.error.withOpacity(0.7),
+                        size: 18,
+                      ),
+                      onPressed: () =>
+                          Provider.of<AppProvider>(context, listen: false)
+                              .deleteRecipe(widget.data.recipe.id),
+                    )
+                ],
               ),
               SizedBox(height: 10)
             ],

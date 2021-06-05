@@ -40,8 +40,8 @@ class _EntryScreenState extends State<EntryScreen>
       backgroundColor: AppColors.white.withOpacity(0.9),
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return StatefulBuilder(builder: (BuildContext context,
-            StateSetter setState /*You can rename this!*/) {
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
           return AddRecipe();
         });
       },

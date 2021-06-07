@@ -33,10 +33,9 @@ class AppServices {
     await _firebaseAuth.signInAnonymously();
   }
 
-  Future<void> registerUserProfile(String userName, String userId) async {
+  Future<void> registerUserProfile(
+      String userName, String userId, String token) async {
     try {
-      final token = ''; //TODO: token from firebase messaging
-
       _userCollectionReference.doc(userId).set(
             UserModel(
               userName: userName,

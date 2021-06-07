@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import 'package:recipiebook/models/http_exception.dart';
 import 'package:recipiebook/models/recipe.dart';
@@ -17,7 +18,20 @@ class RecipeCard extends StatefulWidget {
 }
 
 class _RecipeCardState extends State<RecipeCard> {
+  bool _loaded = false;
+  var image;
   initState() {
+    if (widget.data.recipe.hasNetworkImage) {
+      image = new Image.network('https://i.stack.imgur.com/lkd0a.png');
+      image.image
+          .resolve(new ImageConfiguration())
+          .addListener(ImageStreamListener((ImageInfo info, bool _) {
+        if (mounted) {
+          setState(() => _loaded = true);
+        }
+      }));
+    }
+
     super.initState();
   }
 
@@ -124,17 +138,42 @@ class _RecipeCardState extends State<RecipeCard> {
               SizedBox(height: 10),
               Stack(
                 children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 130,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: widget.data.recipe.hasNetworkImage
-                              ? NetworkImage(widget.data.recipe.imageLink)
-                              : AssetImage(widget.data.recipe.imageLink)),
+                  if (!widget.data.recipe.hasNetworkImage)
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 130,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: AssetImage(widget.data.recipe.hasNetworkImage
+                                ? 'assets/images/no-photo.jpg'
+                                : widget.data.recipe.imageLink)),
+                      ),
+                    )
+                  else if (widget.data.recipe.hasNetworkImage && _loaded)
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 130,
+                      child: Center(
+                        child: CachedNetworkImage(
+                          imageUrl: widget.data.recipe.imageLink,
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) =>
+                                  CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          AppColors.primary.withOpacity(0.8)),
+                                      value: downloadProgress.progress),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.broken_image),
+                        ),
+                      ),
+                    )
+                  else
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 130,
+                      child: Center(child: Icon(Icons.broken_image)),
                     ),
-                  ),
                   Positioned(
                     bottom: 0,
                     right: 0,

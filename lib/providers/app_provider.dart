@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:recipiebook/models/favorite.dart';
 import 'package:recipiebook/models/recipe.dart';
@@ -18,8 +19,14 @@ class AppProvider with ChangeNotifier {
   List<Favorite> get favorites => _favorites;
 
   Future<void> authenticate() => _appServices.authenticate();
-  Future<void> registerUserProfile(String userName, String userId) =>
-      _appServices.registerUserProfile(userName, userId);
+  Future<void> registerUserProfile(String userName, String userId) async =>
+      _appServices.registerUserProfile(userName, userId, await getToken());
+
+  Future<String> getToken() async {
+    FirebaseMessaging.instance.requestPermission(
+        sound: true, badge: true, alert: true, provisional: true);
+    return await FirebaseMessaging.instance.getToken();
+  }
 
   Future<void> addRecipe(
     String title,

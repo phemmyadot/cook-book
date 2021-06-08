@@ -92,16 +92,15 @@ class AppProvider with ChangeNotifier {
     if (searchQuery == '') {
       await getRecipes();
     } else {
-      // await getRecipes();s
       List<RecipeKeyword> recipes = _backupRecipes
           .where((RecipeKeyword data) => data.recipe.title
               .toLowerCase()
               .contains(searchQuery.toLowerCase()))
           .toList();
-      for (int i = 0; i < _recipes.length; i++) {
-        var hasMatch = _recipes[i].keywords.any(
+      for (int i = 0; i < _backupRecipes.length; i++) {
+        var hasMatch = _backupRecipes[i].keywords.any(
             (u) => u.keyword.toLowerCase().contains(searchQuery.toLowerCase()));
-        if (hasMatch) recipes.add(_recipes[i]);
+        if (hasMatch) recipes.add(_backupRecipes[i]);
       }
       List<RecipeKeyword> _distinct = [];
       var idSet = <String>{};

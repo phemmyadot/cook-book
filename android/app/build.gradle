@@ -43,11 +43,30 @@ android {
         multiDexEnabled true
     }
 
+    signingConfigs {
+        release {
+            if (System.getenv("APP_ENVIRONMENT") == null)
+             {
+                storeFile rootProject.file("app/android.jks");
+             }else
+             {
+                storeFile rootProject.file(System.getenv("APPCENTER_KEY_LOCATION"));
+             }
+            storePassword System.getenv("APPCENTER_KEYSTORE_PASSWORD")
+            keyAlias System.getenv("APPCENTER_KEY_ALIAS")
+            keyPassword System.getenv("APPCENTER_KEY_PASSWORD")
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            if (System.getenv("APP_ENVIRONMENT") == null) {
+                signingConfig signingConfigs.debug
+            }else{
+                signingConfig signingConfigs.release
+            }
         }
     }
 }

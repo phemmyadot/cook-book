@@ -1,9 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:metadata_extract/metadata_extract.dart';
 import 'package:recipiebook/models/favorite.dart';
-import 'package:recipiebook/models/html_to_json.dart';
 import 'package:recipiebook/models/keyword.dart';
 import 'package:recipiebook/models/recipe.dart';
 import 'package:recipiebook/models/user.dart';
@@ -12,9 +13,6 @@ import 'package:recipiebook/utils/string_utils.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
-import 'package:html/parser.dart' show parse;
-import 'package:html/dom.dart' as dom;
-// import 'package:metadata_fetch/metadata_fetch.dart';
 
 class AppServices {
   final CollectionReference<Map<String, dynamic>> _userCollectionReference =
@@ -31,6 +29,12 @@ class AppServices {
 
   Future<void> authenticate() async {
     await _firebaseAuth.signInAnonymously();
+  }
+
+  Future<List<UserModel>> getAllUsers() async {
+    return _userCollectionReference
+        .get()
+        .then((u) => u.docs.map((e) => UserModel.fromData(e)).toList());
   }
 
   Future<void> registerUserProfile(
@@ -51,13 +55,8 @@ class AppServices {
     }
   }
 
-  Future<void> addRecipe(
-    String title,
-    String link,
-    String creator,
-    String userId,
-    List<String> keywords,
-  ) async {
+  Future<void> addRecipe(String title, String link, String creator,
+      String userId, List<String> keywords, List<UserModel> users) async {
     try {
       final recipeId = Uuid().v1();
       final image = await getImage(link);
@@ -86,8 +85,66 @@ class AppServices {
               modifiedOn: DateTime.now(),
             ).toJson());
       }
+      sendPushMessage(title, users);
     } catch (e) {
       throw HttpException(e?.message);
+    }
+  }
+
+  String constructFCMPayload(String token, String title) {
+    return jsonEncode({
+      'token': token,
+      'notification': {
+        'title': 'A new recpe has been added!',
+        'body': title,
+      },
+    });
+  }
+
+  Future<void> sendPushMessage(String title, List<UserModel> users) async {
+    for (int i = 0; i < users.length; i++) {
+      if (users[i].token.isNotEmpty) {
+        try {
+          await http
+              .post(
+            Uri.parse('https://fcm.googleapis.com/fcm/send'),
+            headers: <String, String>{
+              'Content-Type': 'application/json',
+              'Authorization':
+                  'key=AAAAbXVdpnc:APA91bGlJzm7IzKZ2QrH2quE72ML7RlWxi9TsweyI_1t7-cX2C3BUYmVRt5kS1sy-kOsv_tqDnaBpXw6q8IsLhbbnNi6WlGWn3tgIyryk4bbk2IsX4poEdri7R4sQjXtlhxLLB7VPnuJ',
+            },
+            body: jsonEncode(
+              <String, dynamic>{
+                'notification': <String, dynamic>{
+                  'body': 'this is a body',
+                  'title': 'this is a title'
+                },
+                'priority': 'high',
+                'data': <String, dynamic>{
+                  'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+                  'id': '1',
+                  'status': 'done'
+                },
+                'to': users[i].token,
+              },
+            ),
+          )
+              .whenComplete(() {
+            print('sendOrderCollected(): message sent');
+          });
+
+          // await http.post(
+          //   Uri.parse('https://api.rnfirebase.io/messaging/send'),
+          //   headers: <String, String>{
+          //     'Content-Type': 'application/json; charset=UTF-8',
+          //   },
+          //   body: constructFCMPayload(users[i].token, title),
+          // );
+          print('FCM request for device sent!');
+        } catch (e) {
+          print(e);
+        }
+      }
     }
   }
 

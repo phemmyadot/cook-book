@@ -22,7 +22,7 @@ class RecipeCard extends StatefulWidget {
 class _RecipeCardState extends State<RecipeCard>
     with SingleTickerProviderStateMixin {
   bool _loaded = false;
-  var image;
+  // var image;
   AnimationController controller;
   initState() {
     controller = AnimationController(
@@ -30,8 +30,8 @@ class _RecipeCardState extends State<RecipeCard>
       duration: const Duration(seconds: 1),
     )..repeat();
     if (widget.data.recipe.hasNetworkImage) {
-      image = new Image.network(widget.data.recipe.imageLink);
-      image.image
+      Image.network(widget.data.recipe.imageLink)
+          .image
           .resolve(new ImageConfiguration())
           .addListener(ImageStreamListener((ImageInfo info, bool _) {
         controller.stop();
@@ -42,6 +42,11 @@ class _RecipeCardState extends State<RecipeCard>
     }
 
     super.initState();
+  }
+
+  dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   String truncateWithEllipsis(int cutoff, String myString) {

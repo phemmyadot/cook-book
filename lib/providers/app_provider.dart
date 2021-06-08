@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:recipiebook/models/favorite.dart';
 import 'package:recipiebook/models/recipe.dart';
+import 'package:recipiebook/models/user.dart';
 import 'package:recipiebook/utils/locator.dart';
 import 'package:recipiebook/services/app_services.dart';
 import 'package:recipiebook/utils/settings.dart';
@@ -19,8 +20,15 @@ class AppProvider with ChangeNotifier {
   List<Favorite> get favorites => _favorites;
   bool _showLoading = false;
   bool get showLoading => _showLoading;
+  List<UserModel> _users;
+  List<UserModel> get users => _users;
 
   Future<void> authenticate() => _appServices.authenticate();
+  Future<void> getAllUsers() async {
+    _users = await _appServices.getAllUsers();
+    notifyListeners();
+  }
+
   Future<void> registerUserProfile(String userName, String userId) async =>
       _appServices.registerUserProfile(userName, userId, await getToken());
 
@@ -37,13 +45,7 @@ class AppProvider with ChangeNotifier {
     String userId,
     List<String> keywords,
   ) =>
-      _appServices.addRecipe(
-        title,
-        link,
-        creator,
-        userId,
-        keywords,
-      );
+      _appServices.addRecipe(title, link, creator, userId, keywords, _users);
 
   Future<void> addRecipeToFavorite(String recipeId) =>
       _appServices.addRecipeToFavorite(recipeId, RBSettings.userId);

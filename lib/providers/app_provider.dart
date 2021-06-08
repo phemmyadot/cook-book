@@ -17,6 +17,8 @@ class AppProvider with ChangeNotifier {
   List<RecipeKeyword> get favoriteRecipes => _favoriteRecipes;
   List<Favorite> _favorites = [];
   List<Favorite> get favorites => _favorites;
+  bool _showLoading = false;
+  bool get showLoading => _showLoading;
 
   Future<void> authenticate() => _appServices.authenticate();
   Future<void> registerUserProfile(String userName, String userId) async =>
@@ -44,7 +46,7 @@ class AppProvider with ChangeNotifier {
       );
 
   Future<void> addRecipeToFavorite(String recipeId) =>
-      _appServices.addRecipeToFavorite(recipeId, Settings.userId);
+      _appServices.addRecipeToFavorite(recipeId, RBSettings.userId);
 
   Future<void> removeRecipeFromFavorite(String recipeId) {
     final favoriteId = _favorites.firstWhere((f) => f.recipeId == recipeId).id;
@@ -55,6 +57,7 @@ class AppProvider with ChangeNotifier {
       _appServices.deleteRecipe(recipeId);
 
   Future<void> getRecipes() async {
+    _showLoading = true;
     _appServices.getRecipes().asBroadcastStream().listen(
       (recipes) {
         _backupRecipes = recipes;
@@ -63,7 +66,6 @@ class AppProvider with ChangeNotifier {
             .sort((a, b) => b.recipe.modifiedOn.compareTo(a.recipe.modifiedOn));
 
         getFavorites();
-        notifyListeners();
       },
     );
   }
@@ -80,6 +82,7 @@ class AppProvider with ChangeNotifier {
         _favoriteRecipes
             .sort((a, b) => b.recipe.modifiedOn.compareTo(a.recipe.modifiedOn));
 
+        _showLoading = false;
         notifyListeners();
       },
     );

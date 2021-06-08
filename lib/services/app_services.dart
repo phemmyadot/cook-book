@@ -27,7 +27,7 @@ class AppServices {
       FirebaseFirestore.instance.collection("favorite");
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  List<String> _defaultPaths = StringUtils.defaultPaths;
+  List<String> _defaultPaths = RBStringUtils.defaultPaths;
 
   Future<void> authenticate() async {
     await _firebaseAuth.signInAnonymously();
@@ -97,7 +97,7 @@ class AppServices {
           _defaultPaths.firstWhere((r) => keywords.any((f) => r.contains(f)));
       return 'assets/images/$path';
     } else {
-      return StringUtils.defaultImage;
+      return RBStringUtils.defaultImage;
     }
   }
 

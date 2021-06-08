@@ -42,8 +42,8 @@ class _MyHomePageState extends State<MyHomePage> {
       if (value != null)
         showModalBottomSheet(
           context: context,
-          barrierColor: AppColors.white.withOpacity(0.1),
-          backgroundColor: AppColors.white.withOpacity(0.9),
+          barrierColor: RBColors.white.withOpacity(0.1),
+          backgroundColor: RBColors.white.withOpacity(0.9),
           isScrollControlled: true,
           builder: (BuildContext context) {
             return StatefulBuilder(
@@ -60,8 +60,8 @@ class _MyHomePageState extends State<MyHomePage> {
       if (value != null)
         showModalBottomSheet(
           context: context,
-          barrierColor: AppColors.white.withOpacity(0.1),
-          backgroundColor: AppColors.white.withOpacity(0.9),
+          barrierColor: RBColors.white.withOpacity(0.1),
+          backgroundColor: RBColors.white.withOpacity(0.9),
           isScrollControlled: true,
           builder: (BuildContext context) {
             return StatefulBuilder(

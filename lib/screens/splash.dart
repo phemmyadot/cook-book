@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   route() async {
-    if (Settings.isAppInit) {
+    if (RBSettings.isAppInit) {
       Navigator.of(context).pushNamedAndRemoveUntil(
         ProfileScreen.routeName,
         (Route<dynamic> route) => false,
@@ -95,7 +95,7 @@ class _SplashScreenState extends State<SplashScreen>
                         child: Text('Recipie Book',
                             style: TextStyle(
                                 fontSize: size,
-                                color: AppColors.primary,
+                                color: RBColors.primary,
                                 fontWeight: FontWeight.w500)),
                       );
                     },

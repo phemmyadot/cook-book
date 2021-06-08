@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:recipiebook/providers/app_provider.dart';
 import 'package:recipiebook/utils/app_colors.dart';
+import 'package:recipiebook/utils/app_dialog.dart';
 import 'package:recipiebook/utils/settings.dart';
 import 'package:recipiebook/utils/string_utils.dart';
 import 'package:textfield_tags/textfield_tags.dart';
@@ -53,6 +54,7 @@ class _AddRecipeState extends State<AddRecipe> {
     validateKeywords();
     if (_hasKeywordsError || _hasLinkError) return;
     try {
+      RBDialog.showLoading(context);
       final provider = Provider.of<AppProvider>(context, listen: false);
 
       await provider.addRecipe(
@@ -60,19 +62,18 @@ class _AddRecipeState extends State<AddRecipe> {
             ? _linkController.text
             : _titleController.text,
         _linkController.text,
-        Settings.username,
-        Settings.userId,
+        RBSettings.username,
+        RBSettings.userId,
         _keywords,
       );
+      RBDialog.hideLoading(context);
       Navigator.pop(context);
-    } on HttpException catch (e, s) {
-      print(e.toString());
-      print(s.toString());
-      // TODO Error dialog
-    } catch (e, s) {
-      print(e.toString());
-      print(s.toString());
-      // TODO Error dialog
+    } on HttpException catch (_) {
+      RBDialog.hideLoading(context);
+      RBDialog.showErrorDialog(context, RBStringUtils.addRecipeError);
+    } catch (e) {
+      RBDialog.hideLoading(context);
+      RBDialog.showErrorDialog(context, e.toString());
     }
   }
 
@@ -92,64 +93,64 @@ class _AddRecipeState extends State<AddRecipe> {
                 children: [
                   SizedBox(height: 20),
                   Text(
-                    StringUtils.addRecipeTitle,
+                    RBStringUtils.addRecipeTitle,
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
-                        color: AppColors.darkPrimary,
+                        color: RBColors.darkPrimary,
                         fontSize: 24),
                   ),
                   SizedBox(height: 40),
                   Text(
-                    StringUtils.titleText,
+                    RBStringUtils.titleText,
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
-                        color: AppColors.darkPrimary),
+                        color: RBColors.darkPrimary),
                   ),
                   SizedBox(height: 5),
                   _textField(_titleKey, _titleController,
-                      StringUtils.titleHintText, false),
+                      RBStringUtils.titleHintText, false),
                   SizedBox(height: 20),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        StringUtils.linkText,
+                        RBStringUtils.linkText,
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
-                            color: AppColors.darkPrimary),
+                            color: RBColors.darkPrimary),
                       ),
                       SizedBox(width: 3),
                       Text(
                         '*',
-                        style: TextStyle(fontSize: 12, color: AppColors.error),
+                        style: TextStyle(fontSize: 12, color: RBColors.error),
                       ),
                       SizedBox(width: 10),
                       !_hasLinkError
                           ? SizedBox()
                           : Text(
-                              StringUtils.requiredField,
+                              RBStringUtils.requiredField,
                               style: TextStyle(
-                                  fontSize: 12, color: AppColors.error),
+                                  fontSize: 12, color: RBColors.error),
                             ),
                     ],
                   ),
                   SizedBox(height: 5),
                   _textField(_linkKey, _linkController,
-                      StringUtils.linkHintText, true),
+                      RBStringUtils.linkHintText, true),
                   SizedBox(height: 20),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        StringUtils.keyWordText,
+                        RBStringUtils.keyWordText,
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
-                            color: AppColors.darkPrimary),
+                            color: RBColors.darkPrimary),
                       ),
                       SizedBox(width: 3),
                       Text(
                         '*',
-                        style: TextStyle(fontSize: 12, color: AppColors.error),
+                        style: TextStyle(fontSize: 12, color: RBColors.error),
                       ),
                       SizedBox(width: 10),
                       !_hasKeywordsError
@@ -157,7 +158,7 @@ class _AddRecipeState extends State<AddRecipe> {
                           : Text(
                               'This field is required',
                               style: TextStyle(
-                                  fontSize: 12, color: AppColors.error),
+                                  fontSize: 12, color: RBColors.error),
                             ),
                     ],
                   ),
@@ -166,40 +167,40 @@ class _AddRecipeState extends State<AddRecipe> {
                     key: _keywordKey,
                     tagsStyler: TagsStyler(
                       tagDecoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.6),
+                        color: RBColors.primary.withOpacity(0.6),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       tagCancelIcon: Icon(Icons.cancel,
-                          size: 18.0, color: AppColors.white.withOpacity(0.5)),
+                          size: 18.0, color: RBColors.white.withOpacity(0.5)),
                       tagPadding: const EdgeInsets.symmetric(
                           horizontal: 5, vertical: 2),
                       tagTextPadding: EdgeInsets.only(right: 5),
                     ),
                     textFieldStyler: TextFieldStyler(
-                      cursorColor: AppColors.primary,
-                      textFieldFilledColor: AppColors.bg2,
+                      cursorColor: RBColors.primary,
+                      textFieldFilledColor: RBColors.bg2,
                       textFieldFilled: true,
                       textStyle: TextStyle(
-                        color: AppColors.inactive,
+                        color: RBColors.inactive,
                         height: 1.0,
                       ),
                       textFieldEnabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.primary),
+                        borderSide: BorderSide(color: RBColors.primary),
                         borderRadius: const BorderRadius.all(
                           const Radius.circular(5.0),
                         ),
                       ),
                       textFieldFocusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.primary),
+                        borderSide: BorderSide(color: RBColors.primary),
                         borderRadius: const BorderRadius.all(
                           const Radius.circular(5.0),
                         ),
                       ),
                       isDense: true,
-                      hintText: StringUtils.keyWordHintText,
+                      hintText: RBStringUtils.keyWordHintText,
                       helperText: '',
                       hintStyle:
-                          TextStyle(color: AppColors.inactive, height: 1.0),
+                          TextStyle(color: RBColors.inactive, height: 1.0),
                     ),
                     onTag: (tag) {
                       _keywords.add(tag);
@@ -221,7 +222,7 @@ class _AddRecipeState extends State<AddRecipe> {
                           child: OutlinedButton(
                               style: ButtonStyle(
                                 side: MaterialStateProperty.all<BorderSide>(
-                                    BorderSide(color: AppColors.primary)),
+                                    BorderSide(color: RBColors.primary)),
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -229,7 +230,7 @@ class _AddRecipeState extends State<AddRecipe> {
                                 child: Text(
                                   'Cancel',
                                   style: TextStyle(
-                                      color: AppColors.primary,
+                                      color: RBColors.primary,
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500),
                                 ),
@@ -243,13 +244,13 @@ class _AddRecipeState extends State<AddRecipe> {
                             child: Text(
                               'Save',
                               style: TextStyle(
-                                  color: AppColors.white,
+                                  color: RBColors.white,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500),
                             ),
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                AppColors.primary,
+                                RBColors.primary,
                               ),
                             ),
                           ),
@@ -269,33 +270,33 @@ class _AddRecipeState extends State<AddRecipe> {
       key: key,
       textCapitalization: TextCapitalization.sentences,
       controller: controller,
-      style: TextStyle(fontSize: 16.0, height: 1.0, color: AppColors.inactive),
+      style: TextStyle(fontSize: 16.0, height: 1.0, color: RBColors.inactive),
       decoration: new InputDecoration(
         border: new OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.primary),
+          borderSide: BorderSide(color: RBColors.primary),
           borderRadius: const BorderRadius.all(
             const Radius.circular(5.0),
           ),
         ),
         enabledBorder: new OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.primary),
+          borderSide: BorderSide(color: RBColors.primary),
           borderRadius: const BorderRadius.all(
             const Radius.circular(5.0),
           ),
         ),
         focusedBorder: new OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.primary),
+          borderSide: BorderSide(color: RBColors.primary),
           borderRadius: const BorderRadius.all(
             const Radius.circular(5.0),
           ),
         ),
-        focusColor: AppColors.primary,
-        hoverColor: AppColors.primary,
+        focusColor: RBColors.primary,
+        hoverColor: RBColors.primary,
         isDense: true,
         filled: true,
-        hintStyle: new TextStyle(color: AppColors.inactive, height: 1.0),
+        hintStyle: new TextStyle(color: RBColors.inactive, height: 1.0),
         hintText: hintText,
-        fillColor: AppColors.bg2,
+        fillColor: RBColors.bg2,
       ),
       onChanged: (_) => validate ? validateLink() : null,
     );

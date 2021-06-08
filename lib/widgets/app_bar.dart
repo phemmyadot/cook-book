@@ -3,6 +3,8 @@ import 'package:recipiebook/models/http_exception.dart';
 import 'package:recipiebook/providers/app_provider.dart';
 import 'package:recipiebook/utils/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:recipiebook/utils/app_dialog.dart';
+import 'package:recipiebook/utils/string_utils.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final bool isFavorite;
@@ -28,14 +30,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
               .searchFavorites(searchText)
           : await Provider.of<AppProvider>(context, listen: false)
               .searchRecipes(searchText);
-    } on HttpException catch (e, s) {
-      print(e.toString());
-      print(s.toString());
-      // TODO Error dialog
-    } catch (e, s) {
-      print(e.toString());
-      print(s.toString());
-      // TODO Error dialog
+    } on HttpException catch (_) {
+      RBDialog.showErrorDialog(context, RBStringUtils.erorOcurred);
+    } catch (e) {
+      RBDialog.showErrorDialog(context, e.toString());
     }
   }
 
@@ -44,10 +42,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
     return AppBar(
       flexibleSpace: Container(
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: RBColors.white,
           boxShadow: [
             BoxShadow(
-              color: AppColors.inactive,
+              color: RBColors.inactive,
               offset: Offset(0.0, 0.3),
               blurRadius: 2.0,
             ),
@@ -65,22 +63,22 @@ class _CustomAppBarState extends State<CustomAppBar> {
             controller: widget.searchController,
             onChanged: (val) => _searchRecipe(val),
             style: TextStyle(
-                fontSize: 16.0, height: 1.0, color: AppColors.inactive),
+                fontSize: 16.0, height: 1.0, color: RBColors.inactive),
             decoration: new InputDecoration(
               border: new OutlineInputBorder(
-                borderSide: BorderSide(color: AppColors.primary),
+                borderSide: BorderSide(color: RBColors.primary),
                 borderRadius: const BorderRadius.all(
                   const Radius.circular(50.0),
                 ),
               ),
               enabledBorder: new OutlineInputBorder(
-                borderSide: BorderSide(color: AppColors.primary),
+                borderSide: BorderSide(color: RBColors.primary),
                 borderRadius: const BorderRadius.all(
                   const Radius.circular(50.0),
                 ),
               ),
               focusedBorder: new OutlineInputBorder(
-                borderSide: BorderSide(color: AppColors.primary),
+                borderSide: BorderSide(color: RBColors.primary),
                 borderRadius: const BorderRadius.all(
                   const Radius.circular(50.0),
                 ),
@@ -90,19 +88,19 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 icon: Icon(
                   Icons.search,
                   size: 20,
-                  color: AppColors.primary,
+                  color: RBColors.primary,
                 ),
               ),
-              focusColor: AppColors.primary,
-              hoverColor: AppColors.primary,
+              focusColor: RBColors.primary,
+              hoverColor: RBColors.primary,
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
               isDense: true,
               filled: true,
-              hintStyle: new TextStyle(color: AppColors.inactive, height: 1.0),
+              hintStyle: new TextStyle(color: RBColors.inactive, height: 1.0),
               hintText:
                   "Search ${widget.isFavorite ? 'from your favorites' : 'from all recipes'}",
-              fillColor: AppColors.bg2,
+              fillColor: RBColors.bg2,
             ),
           ),
         ),

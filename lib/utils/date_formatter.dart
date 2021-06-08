@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 
-class DateFormatter {
-  DateFormatter(this.dateTime);
+class RBDateFormatter {
+  RBDateFormatter(this.dateTime);
   final dateTime;
 
   String format() {

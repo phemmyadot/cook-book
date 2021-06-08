@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Settings {
+class RBSettings {
   static SharedPreferences sharedPrefs;
   static Future init() async =>
       sharedPrefs = await SharedPreferences.getInstance();

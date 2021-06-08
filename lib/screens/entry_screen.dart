@@ -36,8 +36,8 @@ class _EntryScreenState extends State<EntryScreen>
   _showAddModal() {
     showModalBottomSheet(
       context: context,
-      barrierColor: AppColors.white.withOpacity(0.1),
-      backgroundColor: AppColors.white.withOpacity(0.9),
+      barrierColor: RBColors.white.withOpacity(0.1),
+      backgroundColor: RBColors.white.withOpacity(0.9),
       isScrollControlled: true,
       builder: (BuildContext context) {
         return StatefulBuilder(
@@ -63,9 +63,9 @@ class _EntryScreenState extends State<EntryScreen>
         },
         child: Icon(
           Icons.add,
-          color: AppColors.white,
+          color: RBColors.white,
         ),
-        backgroundColor: AppColors.primary,
+        backgroundColor: RBColors.primary,
         elevation: 2.0,
       ),
       body: GestureDetector(
@@ -75,7 +75,7 @@ class _EntryScreenState extends State<EntryScreen>
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [AppColors.bg1, AppColors.bg2],
+              colors: [RBColors.bg1, RBColors.bg2],
             ),
           ),
           child: new TabBarView(
@@ -98,9 +98,9 @@ class _EntryScreenState extends State<EntryScreen>
     return Builder(builder: (BuildContext context) {
       return Container(
         child: FABBottomAppBar(
-          backgroundColor: AppColors.white,
-          color: AppColors.inactive,
-          selectedColor: AppColors.primary,
+          backgroundColor: RBColors.white,
+          color: RBColors.inactive,
+          selectedColor: RBColors.primary,
           notchedShape: CircularNotchedRectangle(),
           onTabSelected: (index) async {
             switch (index) {

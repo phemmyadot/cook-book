@@ -1,4 +1,4 @@
-class StringUtils {
+class RBStringUtils {
   static String welcomeNote1 = 'Welcome to Recipie Book,';
   static String welcomeNote2 = 'set you username to proceed.';
   static String emptyList = 'List is Empty';
@@ -11,8 +11,13 @@ class StringUtils {
   static String usernameHintText = "Enter you username";
   static String addRecipeTitle = 'Add new recipe';
   static String requiredField = 'This field is required';
-  static String uploadNote =
-      'NB. Image will be chosen based on keyword if one is not uploaded';
+  static String erorOcurred = 'An error ocurred. Please try again later.';
+  static String getRecipesError =
+      'Couldn\'t fetch recipes now. Please try again later.';
+  static String addRecipeError =
+      'Couldn\'t add your recipe now. Please try again later.';
+  static String profileCreationError =
+      'Couldn\'t create your profile. Please try again later.';
   static List<String> defaultPaths = [
     'sample.jpg',
     'verg.jpg',

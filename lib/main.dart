@@ -12,7 +12,7 @@ void main() async {
   await Firebase.initializeApp();
 
   setupLocator();
-  await Settings.init();
+  await RBSettings.init();
 
   await runZonedGuarded(() async {
     runApp(

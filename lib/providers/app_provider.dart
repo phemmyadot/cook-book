@@ -94,15 +94,21 @@ class AppProvider with ChangeNotifier {
     if (searchQuery == '') {
       await getRecipes();
     } else {
-      List<RecipeKeyword> recipes = _backupRecipes
-          .where((RecipeKeyword data) => data.recipe.title
-              .toLowerCase()
-              .contains(searchQuery.toLowerCase()))
-          .toList();
-      for (int i = 0; i < _backupRecipes.length; i++) {
-        var hasMatch = _backupRecipes[i].keywords.any(
-            (u) => u.keyword.toLowerCase().contains(searchQuery.toLowerCase()));
-        if (hasMatch) recipes.add(_backupRecipes[i]);
+      var keywords = searchQuery.split(',');
+      List<RecipeKeyword> recipes = [];
+
+      for (int i = 0; i < keywords.length; i++) {
+        var found = _backupRecipes
+            .where((RecipeKeyword data) => data.recipe.title
+                .toLowerCase()
+                .contains(searchQuery.toLowerCase()))
+            .toList();
+        for (int i = 0; i < _backupRecipes.length; i++) {
+          var hasMatch = _backupRecipes[i].keywords.any((u) =>
+              u.keyword.toLowerCase().contains(searchQuery.toLowerCase()));
+          if (hasMatch) found.add(_backupRecipes[i]);
+        }
+        recipes = [...recipes, ...found];
       }
       List<RecipeKeyword> _distinct = [];
       var idSet = <String>{};

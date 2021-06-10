@@ -70,8 +70,7 @@ class _RecipePageState extends State<RecipePage> {
                         )
                       : Container(
                           child: GridView.count(
-                              childAspectRatio:
-                                  screenWidth / (screenHeight - 50),
+                              childAspectRatio: screenWidth / screenHeight,
                               shrinkWrap: true,
                               physics: ClampingScrollPhysics(),
                               primary: false,

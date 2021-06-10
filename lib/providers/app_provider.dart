@@ -35,6 +35,13 @@ class AppProvider with ChangeNotifier {
   Future<String> getToken() async {
     FirebaseMessaging.instance.requestPermission(
         sound: true, badge: true, alert: true, provisional: true);
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+      print("message recieved");
+      print(event.notification.body);
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print('Message clicked!');
+    });
     return await FirebaseMessaging.instance.getToken();
   }
 

@@ -116,8 +116,8 @@ class AppServices {
             body: jsonEncode(
               <String, dynamic>{
                 'notification': <String, dynamic>{
-                  'body': 'this is a body',
-                  'title': 'this is a title'
+                  'body': title,
+                  'title': 'A new recipe has been added!',
                 },
                 'priority': 'high',
                 'data': <String, dynamic>{
@@ -130,17 +130,8 @@ class AppServices {
             ),
           )
               .whenComplete(() {
-            print('sendOrderCollected(): message sent');
+            print('sendOrderCollected(): message sent to ${users[i].userName}');
           });
-
-          // await http.post(
-          //   Uri.parse('https://api.rnfirebase.io/messaging/send'),
-          //   headers: <String, String>{
-          //     'Content-Type': 'application/json; charset=UTF-8',
-          //   },
-          //   body: constructFCMPayload(users[i].token, title),
-          // );
-          print('FCM request for device sent!');
         } catch (e) {
           print(e);
         }

@@ -222,9 +222,8 @@ class ErrorAlertDialog extends StatelessWidget {
                   child: TextButton(
                     child: Text(
                       confirmText,
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
+                      style:
+                          TextStyle(fontSize: 16, color: RBColors.darkPrimary),
                     ),
                     style: ButtonStyle(
                       textStyle: MaterialStateProperty.all<TextStyle>(

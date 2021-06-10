@@ -233,16 +233,13 @@ class ErrorAlertDialog extends StatelessWidget {
                         ),
                       ),
                       backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.blue),
+                          MaterialStateProperty.all<Color>(Colors.white),
                       padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
                           EdgeInsets.all(5.0)),
                       elevation: MaterialStateProperty.all<double>(0.0),
                     ),
                     onPressed: () {
                       Navigator.pop(context);
-                      if (onConfirm != null) {
-                        onConfirm();
-                      }
                     },
                   ),
                 ),

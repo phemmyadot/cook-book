@@ -101,12 +101,13 @@ class AppProvider with ChangeNotifier {
         var found = _backupRecipes
             .where((RecipeKeyword data) => data.recipe.title
                 .toLowerCase()
-                .contains(searchQuery.toLowerCase()))
+                .contains(keywords[i].toLowerCase().replaceFirst(' ', '')))
             .toList();
-        for (int i = 0; i < _backupRecipes.length; i++) {
-          var hasMatch = _backupRecipes[i].keywords.any((u) =>
-              u.keyword.toLowerCase().contains(searchQuery.toLowerCase()));
-          if (hasMatch) found.add(_backupRecipes[i]);
+        for (int j = 0; j < _backupRecipes.length; j++) {
+          var hasMatch = _backupRecipes[j].keywords.any((u) => u.keyword
+              .toLowerCase()
+              .contains(keywords[i].toLowerCase().replaceFirst(' ', '')));
+          if (hasMatch) found.add(_backupRecipes[j]);
         }
         recipes = [...recipes, ...found];
       }

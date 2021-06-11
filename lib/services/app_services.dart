@@ -58,7 +58,7 @@ class AppServices {
   Future<void> updateToken(String token, String userId) async {
     try {
       if (userId != null)
-        await _userCollectionReference.doc(userId).update({'token': token});
+        _userCollectionReference.doc(userId).update({'token': token});
     } catch (e) {
       throw HttpException(e.message);
     }

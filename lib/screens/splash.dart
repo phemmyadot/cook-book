@@ -56,6 +56,7 @@ class _SplashScreenState extends State<SplashScreen>
         (Route<dynamic> route) => false,
       );
     } else {
+      await Provider.of<AppProvider>(context, listen: false).updateToken();
       Navigator.of(context).pushNamedAndRemoveUntil(
         EntryScreen.routeName,
         (Route<dynamic> route) => false,

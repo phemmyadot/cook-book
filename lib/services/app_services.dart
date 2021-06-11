@@ -55,6 +55,14 @@ class AppServices {
     }
   }
 
+  Future<void> updateToken(String token, String userId) async {
+    try {
+      await _userCollectionReference.doc(userId).update({'token': token});
+    } catch (e) {
+      throw HttpException(e.message);
+    }
+  }
+
   Future<void> addRecipe(String title, String link, String creator,
       String userId, List<String> keywords, List<UserModel> users) async {
     try {

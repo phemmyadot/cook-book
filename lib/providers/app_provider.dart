@@ -57,6 +57,9 @@ class AppProvider with ChangeNotifier {
   Future<void> addRecipeToFavorite(String recipeId) =>
       _appServices.addRecipeToFavorite(recipeId, RBSettings.userId);
 
+  Future<void> updateToken() async =>
+      await _appServices.updateToken(await getToken(), RBSettings.userId);
+
   Future<void> removeRecipeFromFavorite(String recipeId) {
     final favoriteId = _favorites.firstWhere((f) => f.recipeId == recipeId).id;
     return _appServices.removeRecipeFromFavorite(favoriteId);

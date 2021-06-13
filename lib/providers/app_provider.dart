@@ -106,23 +106,26 @@ class AppProvider with ChangeNotifier {
     } else {
       var keywords = searchQuery.split(',');
       List<RecipeKeyword> recipes = [];
-
+      List<RecipeKeyword> matchedRecipes = [];
+      matchedRecipes = _backupRecipes;
       for (int i = 0; i < keywords.length; i++) {
         if (keywords[i].isNotEmpty) {
-          var found = _backupRecipes
+          var found = matchedRecipes
               .where((RecipeKeyword data) => data.recipe.title
                   .toLowerCase()
                   .contains(keywords[i].toLowerCase().replaceFirst(' ', '')))
               .toList();
-          for (int j = 0; j < _backupRecipes.length; j++) {
-            var hasMatch = _backupRecipes[j].keywords.any((u) => u.keyword
+          for (int j = 0; j < matchedRecipes.length; j++) {
+            var hasMatch = matchedRecipes[j].keywords.any((u) => u.keyword
                 .toLowerCase()
                 .contains(keywords[i].toLowerCase().replaceFirst(' ', '')));
-            if (hasMatch) found.add(_backupRecipes[j]);
+            if (hasMatch) found.add(matchedRecipes[j]);
           }
           recipes = [...recipes, ...found];
+          matchedRecipes = found;
         }
       }
+      recipes = matchedRecipes;
       List<RecipeKeyword> _distinct = [];
       var idSet = <String>{};
       for (var r in recipes) {
@@ -141,24 +144,36 @@ class AppProvider with ChangeNotifier {
     if (searchQuery == '') {
       getFavorites();
     } else {
-      List<RecipeKeyword> favoriteRecipes = _backupFavoriteRecipes
-          .where((RecipeKeyword data) => data.recipe.title
-              .toLowerCase()
-              .contains(searchQuery.toLowerCase()))
-          .toList();
-      for (int i = 0; i < _favoriteRecipes.length; i++) {
-        var hasMatch = _favoriteRecipes[i].keywords.any(
-            (u) => u.keyword.toLowerCase().contains(searchQuery.toLowerCase()));
-        if (hasMatch) favoriteRecipes.add(_favoriteRecipes[i]);
+      var keywords = searchQuery.split(',');
+      List<RecipeKeyword> recipes = [];
+      List<RecipeKeyword> matchedRecipes = [];
+      matchedRecipes = _backupFavoriteRecipes;
+      for (int i = 0; i < keywords.length; i++) {
+        if (keywords[i].isNotEmpty) {
+          var found = matchedRecipes
+              .where((RecipeKeyword data) => data.recipe.title
+                  .toLowerCase()
+                  .contains(keywords[i].toLowerCase().replaceFirst(' ', '')))
+              .toList();
+          for (int j = 0; j < matchedRecipes.length; j++) {
+            var hasMatch = matchedRecipes[j].keywords.any((u) => u.keyword
+                .toLowerCase()
+                .contains(keywords[i].toLowerCase().replaceFirst(' ', '')));
+            if (hasMatch) found.add(matchedRecipes[j]);
+          }
+          recipes = [...recipes, ...found];
+          matchedRecipes = found;
+        }
       }
+      recipes = matchedRecipes;
       List<RecipeKeyword> _distinct = [];
       var idSet = <String>{};
-      for (var r in favoriteRecipes) {
+      for (var r in recipes) {
         if (idSet.add(r.recipe.id)) {
           _distinct.add(r);
         }
       }
-      _favoriteRecipes = favoriteRecipes;
+      _favoriteRecipes = _distinct;
       _favoriteRecipes
           .sort((a, b) => b.recipe.modifiedOn.compareTo(a.recipe.modifiedOn));
     }

@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   route() async {
-    if (RBSettings.isAppInit) {
+    if (!RBSettings.isAppInit) {
       Navigator.of(context).pushNamedAndRemoveUntil(
         ProfileScreen.routeName,
         (Route<dynamic> route) => false,
